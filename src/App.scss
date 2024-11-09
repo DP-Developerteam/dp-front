@@ -1,0 +1,36 @@
+@import './styles/animations.scss';
+@import './styles/colors.scss';
+@import './styles/fonts.scss';
+@import './styles/forms.scss';
+@import './styles/general.scss';
+@import './styles/helpers.scss';
+@import './styles/pages.scss';
+
+body{
+    scroll-behavior: smooth;
+    background: $color-light;
+    @include font(1rem, 400, $color-dark);
+    word-break: normal;
+}
+
+.myDP-RestMenuApp {
+    // display: flex;
+    // justify-content: flex-start;
+    // flex-flow: column wrap;
+    // align-items: center;
+    @include displayFlex(column nowrap, flex-start, center);
+    width: 100%;
+    min-height: 100dvh;
+}
+
+.contentDP {
+    @include displayFlex(column nowrap, center, center);
+    padding: 70px 0px 60px;
+    min-height: 100dvh;
+}
+
+@media (min-height: 150dvh) {
+    .contentDP {
+        justify-content: flex-start;
+    }
+}

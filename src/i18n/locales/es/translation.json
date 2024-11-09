@@ -1,0 +1,39 @@
+{
+    "nav": {
+        "home": "Inicio",
+        "menu": "Carta",
+        "food": "Comida",
+        "drinks": "Bebidas",
+        "signIn": "Iniciar sesión",
+        "signUp": "Registrarse",
+        "signOut": "Cerrar sesión"
+    },
+    "home": {
+        "intro": {
+        "title": "Título en la página de inicio",
+        "paragraph": "Párrafo en la página de inicio"
+        }
+    },
+    "menu": {
+        "intro": {
+        "title": "Título en la página de la carta",
+        "paragraph": "Párrafo en la página de a carta"
+        }
+    },
+    "food": {
+        "intro": {
+        "title": "Título en la página de la comidas",
+        "paragraph": "Párrafo en la página de a comidas"
+        }
+    },
+    "drinks": {
+        "intro": {
+        "title": "Título en la página de la bebidas",
+        "paragraph": "Párrafo en la página de a bebidas"
+        },
+        "hotDrink": "Bebidas calientes",
+        "coldDrink": "Bebidas frías",
+        "alcoholicDrink": "Bebidas alcohólicas",
+        "nonAlcoholicDrink": "Bebidas sin alcohol"
+    }
+}

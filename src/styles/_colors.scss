@@ -1,0 +1,21 @@
+//COLOR VARIABLES
+
+// Base Colors
+$color-background: #FFFFFF;      // Pure white for a clean, minimalist backdrop
+$color-light: #F7F7F7;           // Very light gray for subtle contrast and depth
+$color-dark: #333333;            // Charcoal gray for text and dark elements
+$color-dark-brown: #4E342E;
+$color-dark-gray: #383838;
+
+// Accent Colors
+$color-primary: #00796B;         // Teal for primary buttons and highlights
+$color-secondary: #FF6F61;       // Coral for secondary accents and alerts
+$color-tertiary: #FFC107;        // Mustard yellow for friendly and vibrant details
+
+// Gradients
+$gradient-primary: linear-gradient(to right, $color-primary, $color-secondary); // For buttons or backgrounds
+$gradient-soft: linear-gradient(to right, $color-background, $color-light);      // Subtle background gradient
+
+// Text Colors
+$color-text-primary: $color-dark; // Primary text color
+$color-text-secondary: $color-light; // Secondary text color for less emphasis

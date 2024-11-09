@@ -1,0 +1,223 @@
+@import './colors.scss';
+@import './fonts.scss';
+@import './general.scss';
+@import './helpers.scss';
+
+.formContainer {
+    @include displayFlex(column wrap, flex-start, flex-start);
+    // width: 100%;
+    height: 100%;
+    gap: 20px;
+    background-color: #ececec;
+    padding: 10px 10px;
+    border-radius: 15px;
+
+    .formHeader {
+        @include displayFlex(row wrap, space-between, flex-start);
+        width: 100%;
+    }
+
+    .formBody {
+        @include displayFlex(column wrap, flex-start, flex-start);
+        gap: 10px;
+
+        .formGroup {
+            @include displayFlex(column wrap, flex-start, flex-start);
+            gap: 10px;
+
+            .formField {
+                @include displayFlex(column nowrap, flex-start, flex-start);
+                gap: 5px;
+                // width: 350px;
+                width: 90dvw;
+
+                label, input[type="text"], input[type="password"], select {
+                    width: 100%
+                }
+                label {
+                    @include font(0.8rem, 300, $color-dark);
+                    text-align: start;
+                }
+                input[type="text"], input[type="password"], select {
+                    @include font(1rem, 300, $color-dark);
+                    padding: 15px 5px;
+                    border-radius: 5px;
+                    border: none;
+                }
+
+                .commentsContainer {
+                    @include displayFlex(row nowrap, space-between, center);
+                    gap: 10px;
+                    width: 100%;
+
+                    .buttonIcon {
+                        background-color: $color-background;
+                        padding: 15px;
+                        border-radius: 5px;
+                        height: 100%;
+                    }
+
+                    .buttonsContainer {
+                        @include displayFlex(row nowrap, center, center);
+                        gap: 10px;
+                    }
+                }
+
+                .commentsList {
+                    @include displayFlex(column nowrap, center, center);
+                    gap: 15px;
+                    margin: 10px 0;
+
+                    .commentsContainer {
+                        align-items: flex-start;
+                    }
+                }
+            }
+        }
+    }
+
+    .formFooter {
+        width: 100%;
+
+        .error-message {
+            @include font(0.8rem, 300, $color-dark);
+        }
+
+        .button {
+            @include displayFlex(column nowrap, center, center);
+            @include button($color-background, $color-dark);
+            @include hoverPointer();
+            width: 100%;
+            padding: 15px 0;
+            margin-top: 10px;
+        }
+    }
+
+    @media (min-width: 810px) {
+        max-height: 650px;
+        gap: 20px;
+        padding: 30px 30px;
+        border-radius: 35px;
+
+        .formBody {
+            @include displayFlex(row wrap, flex-start, flex-start);
+            gap: 30px;
+            .formGroup {
+                @include displayFlex(column wrap, flex-start, flex-start);
+                gap: 10px;
+                .formField {
+                    width: 350px;
+                }
+            }
+
+            @media (min-width: 950px ) {
+                :nth-child(even) {
+                    .formField {
+                        width: 450px;
+                    }
+                }
+            }
+        }
+
+        .formFooter {
+            width: 100%;
+            .button {
+                width: 100%;
+            }
+        }
+    }
+
+
+}
+
+// /* Estilos generales del formulario */
+// .formContainer {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 20px;
+//     padding: 20px;
+//     max-width: 600px;
+//     margin: 0 auto;
+//   }
+
+//   .formField {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 5px;
+//   }
+
+//   .formField label {
+//     font-weight: bold;
+//   }
+
+//   .formField input,
+//   .formField select {
+//     padding: 8px;
+//     font-size: 14px;
+//     border: 1px solid #ccc;
+//     border-radius: 4px;
+//   }
+
+//   .formField input[type="text"],
+//   .formField input[type="password"],
+//   .formField select {
+//     width: 100%;
+//   }
+
+//   button {
+//     padding: 10px 15px;
+//     background-color: #007bff;
+//     color: white;
+//     border: none;
+//     border-radius: 5px;
+//     cursor: pointer;
+//   }
+
+//   button[type="button"] {
+//     background-color: #f0f0f0;
+//     border: 1px solid #ccc;
+//     color: #333;
+//     cursor: pointer;
+//   }
+
+//   button:hover {
+//     background-color: #0056b3;
+//   }
+
+//   button[type="button"]:hover {
+//     background-color: #ddd;
+//   }
+
+//   .error-message {
+//     color: red;
+//     font-size: 14px;
+//     margin-top: 10px;
+//   }
+
+//   /* Media query para pantallas más anchas (tablets y desktops) */
+//   @media (min-width: 768px) {
+//     .formContainer {
+//       display: grid;
+//       grid-template-columns: 1fr 1fr; /* Dos columnas */
+//       gap: 20px;
+//     }
+
+//     .formField {
+//       flex-direction: row;
+//       align-items: center;
+//     }
+
+//     .formField label {
+//       width: 100px; /* Espacio fijo para las etiquetas */
+//     }
+
+//     .formField input,
+//     .formField select {
+//       width: 100%;
+//     }
+
+//     /* Ajustar el botón de envío para que ocupe el ancho completo en pantallas grandes */
+//     .formField button {
+//       grid-column: span 2;
+//     }
+//   }

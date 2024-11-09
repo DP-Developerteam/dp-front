@@ -1,0 +1,38 @@
+//ANIMATIONS
+
+
+//EXPAND-MENU is used in file src/components/__components.scss
+@keyframes expand-menu {
+    from {
+        clip-path: circle(0% at 100% 0%);
+    }
+    to {
+        clip-path: circle(150% at 100% 0%);
+    }
+}
+
+//FADE-IN is used in file src/styles/_pages.scss
+@keyframes fade-in {
+    // from {scale: .8; opacity: 0;}
+    to {scale: 1; opacity: 1;}
+}
+
+//HORIZONTAL-SCROLLER is used in file src/styles/_pages.scss
+@keyframes horizontal-scroller {
+    from {
+        transform: translatex(50%);
+    }
+    to {
+        // transform: translate(calc(-90% - .5rem));
+        transform: translatex(-50%);
+    }
+}
+
+//Animation related styles
+@mixin fade-in ($range) {
+    scale: .8;
+    opacity: 0;
+    animation: fade-in linear forwards;
+    animation-timeline: view();
+    animation-range: $range;
+}
