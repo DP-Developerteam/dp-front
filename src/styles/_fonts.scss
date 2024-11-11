@@ -14,3 +14,12 @@
 .bold {
     font-weight: 800;
 }
+.title {
+    @include font(1.5rem, 800, $color-dark);
+}
+.subtitle{
+    @include font(1.25rem, 600, $color-dark);
+}
+.paragraph {
+    @include font(1rem, 400, $color-dark);
+}

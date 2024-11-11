@@ -1,53 +1,42 @@
 // Import styles and libraries
 import '../../../App.scss';
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useParams to access the userId
-import { useDispatch, useSelector } from 'react-redux';
-//Import functions
-import { userByIdThunk } from '../userSlice';
+import { useSelector } from 'react-redux';
+//Import pages
 import { editUser } from '../userService';
+// Import assets
+import iconDelete from '../../../assets/img/icon-delete.svg';
+import iconEdit from '../../../assets/img/icon-edit.svg';
 
-const EditUserForm = () => {
-    // Get the user ID from the URL
-    const { id } = useParams();
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const { token, currentUser } = useSelector((state) => state.user); // Get token and current user
+const EditUserForm = ({ user, onClose, onSave }) => {
+    const { token, userId } = useSelector((state) => state.user); // Get token and user id
+    // Set formData when user is updated
     const [formData, setFormData] = useState({
-        name: '',
-        company: '',
-        email: '',
+        name: user.name || '',
+        company: user.company || '',
+        email: user.email || '',
         password: '',
-        role: '',
-        comments: []
+        role: user.role || '',
+        comments: user.comments || [],
     });
+
     const [createComment, setCreateComment] = useState('');
     const [editingComment, setEditingComment] = useState(null); // Índice del comentario que estamos editando
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
 
-    // Fetch user details when the component mounts
+    // Set formData with user data
     useEffect(() => {
-        if (id && token) {
-            dispatch(userByIdThunk({ userId: id, token })); // Fetch user by ID
-        }
-    }, [dispatch, id, token]);
-
-    // Set formData when currentUser is updated
-    useEffect(() => {
-        if (currentUser) {
-            setFormData({
-                userId: currentUser._id || '',
-                name: currentUser.name || '',
-                company: currentUser.company || '',
-                email: currentUser.email || '',
-                password: '',
-                role: currentUser.role || '',
-                comments: currentUser.comments || [],
-            });
-        }
-    }, [currentUser]);
+        setFormData({
+            name: user.name || '',
+            company: user.company || '',
+            email: user.email || '',
+            password: '',
+            role: user.role || '',
+            comments: user.comments || [],
+        });
+    }, [user]);
 
     // Handle form input changes
     const handleChange = (e) => {
@@ -106,121 +95,155 @@ const EditUserForm = () => {
         });
     };
 
-    // Handle form submission
+    // Handle commits
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
 
-        // Create a new object that omits empty fields
+        // Creamos una copia de los datos del usuario actual
         const filteredFormData = {
-            ...formData,
-            comments: formData.comments.filter(comment => comment.trim() !== '') // Filtrar comentarios vacíos
+            _id: userId,  // Mantener el ID del usuario
+            ...user,  // Copiar los datos actuales del usuario
         };
 
+        // Iteramos sobre los campos del formulario y solo agregamos los que no están vacíos
+        Object.keys(formData).forEach((key) => {
+            const value = formData[key];
+
+            // Verificamos que el valor sea una cadena antes de usar trim()
+            if (typeof value === 'string' && value.trim() !== '') {
+                // Si el campo es contraseña y no se ha modificado, no lo agregamos
+                if (key === 'password' && value.trim() === '') {
+                    return;  // No incluir la contraseña si está vacía
+                }
+                filteredFormData[key] = value.trim();
+            } else if (Array.isArray(value) && value.length > 0) {
+                // Si el campo es un array, lo agregamos solo si no está vacío
+                filteredFormData[key] = value;
+            } else if (value !== undefined && value !== null) {
+                // Si el valor no es vacío, undefined o null, lo agregamos tal cual
+                filteredFormData[key] = value;
+            }
+        });
+
+        // Si no hay cambios en los datos, no enviamos la solicitud
+        if (JSON.stringify(filteredFormData) === JSON.stringify(user)) {
+            console.log('No changes detected.');
+            return;  // No hacemos la solicitud si no hay cambios
+        }
+
+        // Debugging: Verificar los datos que se van a enviar
+        console.log('filteredFormData:', filteredFormData);
+
         try {
-            // Call the editUser service
+            // Llamamos al servicio para actualizar el usuario
             await editUser(filteredFormData, token);
             setSuccessMessage('User updated successfully!');
-            navigate('/users'); // Navigate back to users
+            onSave(filteredFormData);
+            onClose();
         } catch (error) {
-            // Log and set errror message
             console.error('Error updating user:', error);
-            const message = error.response?.data?.message || 'An error occurred during sign up.';
+            const message = error.response?.data?.message || 'An error occurred while updating the user.';
             setErrorMessage(message);
         }
     };
 
     return (
-        <div>
-            {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
-            <form className='formContainer' onSubmit={handleSubmit}>
-                <header className='formHeader'>
-                    <h2>Edit User</h2>
-                    <p>Cancel</p>
-                </header>
-                <div className='formBody'>
-
-                    <div className='formGroup'>
-                        <div className='formField'>
-                            <label>Name:</label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className='formField'>
-                            <label>Company:</label>
-                            <input
-                                type="text"
-                                name="company"
-                                value={formData.company}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className='formField'>
-                            <label>Email:</label>
-                            <input
-                                type="text"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className='formField'>
-                            <label>Password:</label>
-                            <input
-                                type="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className='formField'>
-                            <label>Role:</label>
-                            <select
-                                name="role"
-                                value={formData.role}
-                                onChange={handleChange}
-                            >
-                                <option value="client">Client</option>
-                                <option value="employee">Employee</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className='formGroup'>
-                        <div className='formField'>
-                            <label>Comments:</label>
-                            <div className='commentsContainer'>
+        <div className="modal-overlay">
+            {/* <div className='modal'> */}
+                <form className="formContainer" onSubmit={handleSubmit}>
+                    <header className="formHeader">
+                        <h2>Edit User</h2>
+                        <button type="button" onClick={onClose}>Cancel</button>
+                    </header>
+                    <div className='formBody'>
+                        <div className='formGroup'>
+                            <div className='form-field'>
+                                <label>Name:</label>
                                 <input
                                     type="text"
-                                    value={createComment}
-                                    onChange={handleCommentChange}
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
                                 />
-                                <button className='buttonIcon' type="button" onClick={editingComment !== null ? saveEditedComment : addComment}>
-                                    {editingComment !== null ? 'Update' : 'Create'}
-                                </button>
                             </div>
-                            <ul className='commentsList'>
-                                {formData.comments.map((comment, index) => (
-                                    <li key={index} className='commentsContainer'>
-                                        {comment}
-                                        <div className='buttonsContainer'>
-                                            <button type="button" onClick={() => editComment(index)}>Edit</button>
-                                            <button type="button" onClick={() => removeComment(index)}>Remove</button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className='form-field'>
+                                <label>Company:</label>
+                                <input
+                                    type="text"
+                                    name="company"
+                                    value={formData.company}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className='form-field'>
+                                <label>Email:</label>
+                                <input
+                                    type="text"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className='form-field'>
+                                <label>Password:</label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className='form-field'>
+                                <label>Role:</label>
+                                <select
+                                    name="role"
+                                    value={formData.role}
+                                    onChange={handleChange}
+                                >
+                                    <option value="client">Client</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className='formGroup'>
+                            <div className='form-field'>
+                                <label>Comments:</label>
+                                <div className='commentsContainer'>
+                                    <input
+                                        type="text"
+                                        value={createComment}
+                                        onChange={handleCommentChange}
+                                    />
+                                    <button className='buttonIcon' type="button" onClick={editingComment !== null ? saveEditedComment : addComment}>
+                                        {editingComment !== null ? 'Update' : 'Create'}
+                                    </button>
+                                </div>
+                                <ul className='commentsList'>
+                                    {formData.comments.map((comment, index) => (
+                                        <li key={index} className='commentsContainer'>
+                                            {comment}
+                                            <div className='buttonsContainer'>
+                                                <button type="button" onClick={() => editComment(index)}>
+                                                    <img className='icon' src={iconEdit} alt='delete icon' width='20px' height='20px'/>
+                                                </button>
+                                                <button type="button" onClick={() => removeComment(index)}>
+                                                    <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px'/>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <footer className='formFooter'>
-                    {errorMessage && <p className="error-message">{errorMessage}</p>}
-                    <button className='button' type="submit">Update User</button>
-                </footer>
-            </form>
+                    <footer className='formFooter'>
+                        {successMessage && <p className="error-message">{successMessage}</p>}
+                        {errorMessage && <p className="error-message">{errorMessage}</p>}
+                        <button className="button" type="submit">Update User</button>
+                    </footer>
+                </form>
+            {/* </div> */}
         </div>
     );
 };

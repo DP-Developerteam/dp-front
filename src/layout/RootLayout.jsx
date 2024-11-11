@@ -8,7 +8,7 @@ import Footer from '../components/Footer';
 
 function RootLayout() {
     return (
-        <div className='myDP-RestMenuApp'>
+        <div className='dp-wrapper'>
             <BackTopButton />
             <Header />
             <div className='contentDP'>

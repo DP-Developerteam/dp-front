@@ -13,9 +13,9 @@ import Homepage from './pages/Homepage.jsx';
 import Portfolio from './pages/Portfolio.jsx';
 import WebDevelopment from './pages/WebDevelopment.jsx';
 // User Pages
+import Users from './features/users/pages/Users.jsx';
 import SignIn from './features/users/pages/SignIn.jsx';
-import SignUp from './features/users/pages/SignUp.jsx';
-import AllUsers from './features/users/pages/AllUsers.jsx';
+import SignUp from './features/users/components/SignUpForm.jsx';
 import EditUserForm from './features/users/components/EditUserForm.jsx';
 
 const router = createBrowserRouter(
@@ -27,12 +27,22 @@ const router = createBrowserRouter(
         <Route path="home" element={<Homepage />}/>
         <Route path="portfolio" element={<Portfolio />}/>
         <Route path="webdevelopment" element={<WebDevelopment />}/>
+        <Route path="users" element={<Users />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="signup" element={<SignUp />} />
-        <Route path="users" element={<AllUsers />} />
         <Route path="/users/edit/:id" element={<EditUserForm />} />
     </Route>
-  )
+  ),
+  {
+    future: {
+      v7_skipActionErrorRevalidation: true,
+      v7_startTransition: true,
+      v7_relativeSplatPath: true,
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_partialHydration: true,
+    },
+  }
 )
 
 function App() {

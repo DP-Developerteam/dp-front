@@ -25,7 +25,7 @@
             @include displayFlex(column wrap, flex-start, flex-start);
             gap: 10px;
 
-            .formField {
+            .form-field {
                 @include displayFlex(column nowrap, flex-start, flex-start);
                 gap: 5px;
                 // width: 350px;
@@ -54,7 +54,7 @@
                         background-color: $color-background;
                         padding: 15px;
                         border-radius: 5px;
-                        height: 100%;
+                        // height: 100%;
                     }
 
                     .buttonsContainer {
@@ -66,6 +66,7 @@
                 .commentsList {
                     @include displayFlex(column nowrap, center, center);
                     gap: 15px;
+                    width: 100%;
                     margin: 10px 0;
 
                     .commentsContainer {
@@ -105,14 +106,14 @@
             .formGroup {
                 @include displayFlex(column wrap, flex-start, flex-start);
                 gap: 10px;
-                .formField {
+                .form-field {
                     width: 350px;
                 }
             }
 
             @media (min-width: 950px ) {
                 :nth-child(even) {
-                    .formField {
+                    .form-field {
                         width: 450px;
                     }
                 }
@@ -126,98 +127,44 @@
             }
         }
     }
-
-
 }
 
-// /* Estilos generales del formulario */
-// .formContainer {
-//     display: flex;
-//     flex-direction: column;
-//     gap: 20px;
-//     padding: 20px;
-//     max-width: 600px;
-//     margin: 0 auto;
-//   }
+.filter-bar-container {
+    @include displayFlex(row nowrap, space-between, flex-end);
+    width: 100%;
+    max-width: 500px;
 
-//   .formField {
-//     display: flex;
-//     flex-direction: column;
-//     gap: 5px;
-//   }
+    .filter-bar {
+        @include displayFlex(row nowrap, space-between, flex-end);
+        gap: 10px;
+        width:100%;
 
-//   .formField label {
-//     font-weight: bold;
-//   }
-
-//   .formField input,
-//   .formField select {
-//     padding: 8px;
-//     font-size: 14px;
-//     border: 1px solid #ccc;
-//     border-radius: 4px;
-//   }
-
-//   .formField input[type="text"],
-//   .formField input[type="password"],
-//   .formField select {
-//     width: 100%;
-//   }
-
-//   button {
-//     padding: 10px 15px;
-//     background-color: #007bff;
-//     color: white;
-//     border: none;
-//     border-radius: 5px;
-//     cursor: pointer;
-//   }
-
-//   button[type="button"] {
-//     background-color: #f0f0f0;
-//     border: 1px solid #ccc;
-//     color: #333;
-//     cursor: pointer;
-//   }
-
-//   button:hover {
-//     background-color: #0056b3;
-//   }
-
-//   button[type="button"]:hover {
-//     background-color: #ddd;
-//   }
-
-//   .error-message {
-//     color: red;
-//     font-size: 14px;
-//     margin-top: 10px;
-//   }
-
-//   /* Media query para pantallas más anchas (tablets y desktops) */
-//   @media (min-width: 768px) {
-//     .formContainer {
-//       display: grid;
-//       grid-template-columns: 1fr 1fr; /* Dos columnas */
-//       gap: 20px;
-//     }
-
-//     .formField {
-//       flex-direction: row;
-//       align-items: center;
-//     }
-
-//     .formField label {
-//       width: 100px; /* Espacio fijo para las etiquetas */
-//     }
-
-//     .formField input,
-//     .formField select {
-//       width: 100%;
-//     }
-
-//     /* Ajustar el botón de envío para que ocupe el ancho completo en pantallas grandes */
-//     .formField button {
-//       grid-column: span 2;
-//     }
-//   }
+        .form-field {
+            @include displayFlex(row nowrap, flex-start, center);
+            gap: 10px;
+            width: 100%;
+            label {
+                @include displayFlex(row, center, center);
+                @include font(0.8rem, 300, $color-dark);
+                width: 30px;
+                height: 30px;
+            }
+            input[type="text"] {
+                width: 100%;
+            }
+            input[type="text"], select {
+                @include font(1rem, 300, $color-dark);
+                padding: 15px 5px;
+                border-radius: 5px;
+                border: none;
+            }
+            .icon {
+                height: 20px;
+                width: 20px;
+            }
+        }
+        :nth-child(2) {
+            width: 60px;
+        }
+    }
+}

@@ -34,7 +34,7 @@
             gap: 20px;
 
             .name-tag {
-                @include font(12px, 400, $color-dark);
+                @include font(14px, 400, $color-dark);
                 text-align: start;
                 width: 100%;
             }
@@ -46,7 +46,7 @@
                 max-width: 900px;
                 .description-tag {
                     @include displayFlex(row wrap, flex-start, center);
-                    @include font(12px, 400, $color-dark);
+                    @include font(14px, 400, $color-dark);
                 }
                 .hover {
                     @include hoverPointer();

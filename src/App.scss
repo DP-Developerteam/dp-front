@@ -12,15 +12,12 @@ body{
     @include font(1rem, 400, $color-dark);
     word-break: normal;
 }
-
-.myDP-RestMenuApp {
-    // display: flex;
-    // justify-content: flex-start;
-    // flex-flow: column wrap;
-    // align-items: center;
-    @include displayFlex(column nowrap, flex-start, center);
-    width: 100%;
-    min-height: 100dvh;
+@media (min-width: 820px) {
+    .dp-wrapper {
+        @include displayFlex(column nowrap, flex-start, center);
+        width: 100%;
+        min-height: 100dvh;
+    }
 }
 
 .contentDP {

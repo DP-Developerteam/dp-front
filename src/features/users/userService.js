@@ -81,9 +81,10 @@ export const getUserById = async (userId, userToken) => {
 
 // EDIT USER - Function to edit user by ID
 export const editUser = async (userData, userToken) => {
-    console.log("userService: ", userData);
     // Extract userId from the userData object
-    const userId = userData.userId;
+    const userId = userData._id;
+    console.log("userService userId: ", userId);
+    console.log("userService userToken: ", userToken);
     try {
         // Make a PUT request to update user details
         const response = await api.put(`${API_URL}/edit/${userId}`, userData, {
@@ -91,7 +92,8 @@ export const editUser = async (userData, userToken) => {
             headers: {
                 Authorization: `Bearer ${userToken}`,
             }
-        }, userData);
+        // }, userData);
+        });
         // Return data from the edited user
         return response.data;
     } catch (error) {

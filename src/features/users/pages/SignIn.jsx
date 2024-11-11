@@ -32,15 +32,15 @@ const SignInForm = () => {
 
             // Variables to manage the SignIn
             const userToken = action.token;
-            // const userRole = action.role;
+            const userRole = action.role;
             const expiresIn = action.expiresIn * 1000;
             // const alertExpires = expiresIn - 20; // alert pop ups when there are 20 seconds for the auto signOut
 
             if (userToken) {
 
                 //Conditional to redirect based on role after login
-                // navigate(userRole === 'employee' ? '/users' : '/');
-                navigate('/users');
+                navigate(userRole === 'admin' ? '/users' : '/');
+                // navigate('/users');
 
                 setTimeout(() => {
                     // Redirect to homepage
@@ -60,30 +60,37 @@ const SignInForm = () => {
     return (
         <div className='page'>
             <form onSubmit={handleSubmit} className='formContainer'>
-                <div className='formField'>
-                    {/* <label>Username:</label> */}
-                    <input
-                        type="text"
-                        name="email"
-                        placeholder="Username"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
+                <header className='formHeader'>
+                    <h2>Signin</h2>
+                    <p>Cancel</p>
+                </header>
+                <div className='formBody'>
+                    <div className='formGroup'>
+                        <div className='form-field'>
+                            <label>Email:</label>
+                            <input
+                                type="text"
+                                name="email"
+                                placeholder="E-Mail"
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className='form-field'>
+                            <label>Password:</label>
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div className='formField'>
-                    {/* <label>Password:</label> */}
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                {errorMessage && <p className="error-message">{errorMessage}</p>}
-                <button type="submit" className='button'>Sign In</button>
+                <footer className='formFooter'>
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
+                    <button className='button' type="submit">Login</button>
+                </footer>
             </form>
         </div>
     );
