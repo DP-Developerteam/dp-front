@@ -13,7 +13,7 @@
     border-radius: 15px;
 
     .formHeader {
-        @include displayFlex(row wrap, space-between, flex-start);
+        @include displayFlex(row wrap, space-between, center);
         width: 100%;
     }
 
@@ -44,6 +44,31 @@
                     border-radius: 5px;
                     border: none;
                 }
+                select {
+                    @include hoverPointer();
+                }
+
+                //############################
+                //DELETE LATER
+                select {
+                    @include font(1rem, 300, $color-dark);
+                    padding: 15px 5px;
+                    border-radius: 5px;
+                    border: none;
+                    background-color: white; // Set background for the select input
+                    position: relative;
+
+                    /* Remove default dropdown appearance */
+                    appearance: none;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                }
+                select:focus {
+                    outline: none; // Optional, removes the default focus outline
+                    border: 2px solid $color-dark; // Custom focus styling
+                }
+                //############################
+
 
                 .commentsContainer {
                     @include displayFlex(row nowrap, space-between, center);
@@ -85,13 +110,16 @@
         }
 
         .button {
-            @include displayFlex(column nowrap, center, center);
             @include button($color-background, $color-dark);
-            @include hoverPointer();
             width: 100%;
             padding: 15px 0;
             margin-top: 10px;
         }
+    }
+
+    .button {
+        @include displayFlex(column nowrap, center, center);
+        @include hoverPointer();
     }
 
     @media (min-width: 810px) {
@@ -157,6 +185,9 @@
                 padding: 15px 5px;
                 border-radius: 5px;
                 border: none;
+            }
+            select {
+                @include hoverPointer();
             }
             .icon {
                 height: 20px;

@@ -15,8 +15,6 @@ import WebDevelopment from './pages/WebDevelopment.jsx';
 // User Pages
 import Users from './features/users/pages/Users.jsx';
 import SignIn from './features/users/pages/SignIn.jsx';
-import SignUp from './features/users/components/SignUpForm.jsx';
-import EditUserForm from './features/users/components/EditUserForm.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,8 +27,6 @@ const router = createBrowserRouter(
         <Route path="webdevelopment" element={<WebDevelopment />}/>
         <Route path="users" element={<Users />} />
         <Route path="signin" element={<SignIn />} />
-        <Route path="signup" element={<SignUp />} />
-        <Route path="/users/edit/:id" element={<EditUserForm />} />
     </Route>
   ),
   {

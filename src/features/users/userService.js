@@ -7,10 +7,15 @@ const API_URL = '/users';
 // /src/features/users/userSlicce.js -> function clearUser()
 
 // SIGNUP - Function to sign up a new user
-export const signupUser = async (userData) => {
+export const signupUser = async (userData, userToken) => {
     try {
         // Send a POST request to the '/signup' endpoint with user data to create a new user
-        const response = await api.post(`${API_URL}/signup`, userData);
+        const response = await api.post(`${API_URL}/signup`, userData, {
+            headers: {
+                // Include the token in the header
+                Authorization: `Bearer ${userToken}`
+            }
+        });
 
         // Return the response data (likely the newly created user or a success message)
         return response.data;

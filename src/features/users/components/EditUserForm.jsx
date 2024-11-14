@@ -2,13 +2,14 @@
 import '../../../App.scss';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-//Import pages
+// Import service
 import { editUser } from '../userService';
 // Import assets
 import iconDelete from '../../../assets/img/icon-delete.svg';
 import iconEdit from '../../../assets/img/icon-edit.svg';
+import iconClose from '../../../assets/img/icon-close.svg';
 
-const EditUserForm = ({ user, onClose, onSave }) => {
+const EditUserForm = ({ user, onCloseModals, onSave }) => {
     const { token, userId } = useSelector((state) => state.user); // Get token and user id
     // Set formData when user is updated
     const [formData, setFormData] = useState({
@@ -140,7 +141,6 @@ const EditUserForm = ({ user, onClose, onSave }) => {
             await editUser(filteredFormData, token);
             setSuccessMessage('User updated successfully!');
             onSave(filteredFormData);
-            onClose();
         } catch (error) {
             console.error('Error updating user:', error);
             const message = error.response?.data?.message || 'An error occurred while updating the user.';
@@ -150,11 +150,12 @@ const EditUserForm = ({ user, onClose, onSave }) => {
 
     return (
         <div className="modal-overlay">
-            {/* <div className='modal'> */}
                 <form className="formContainer" onSubmit={handleSubmit}>
                     <header className="formHeader">
                         <h2>Edit User</h2>
-                        <button type="button" onClick={onClose}>Cancel</button>
+                        <button className="button" type="button" onClick={onCloseModals}>
+                            <img className='icon' src={iconClose} alt='delete icon' width='20px' height='20px'/>
+                        </button>
                     </header>
                     <div className='formBody'>
                         <div className='formGroup'>
@@ -243,7 +244,6 @@ const EditUserForm = ({ user, onClose, onSave }) => {
                         <button className="button" type="submit">Update User</button>
                     </footer>
                 </form>
-            {/* </div> */}
         </div>
     );
 };

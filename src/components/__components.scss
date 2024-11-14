@@ -1,5 +1,19 @@
 @import '../App.scss';
 
+//Styles for Header, Footer, scrollTop and Notifications
+
+.scrollTop {
+    position: fixed;
+    bottom: 60px;
+    right: 0;
+    z-index: 95;
+    @include button($color-dark, $color-light);
+    border-radius: 5px 0 0 5px;
+    padding: 5px 15px 5px 5px;
+    .icon {
+        width: 24px;
+    }
+}
 .header {
     @include displayFlex(row nowrap, space-between, center);
     @include font(16px, 400, $color-dark);
@@ -74,4 +88,25 @@
     padding: 40px 20px;
     background-color: $color-dark;
     color: $color-light;
+}
+.notifications {
+    @include displayFlex(column nowrap, flex-start, flex-start);
+    gap: 10px;
+    padding: 20px;
+    position: fixed;
+    z-index: 999999;
+    top: 20px;
+    right: 20px;
+    background-color: $color-background;
+    border-radius: 20px;
+    @include pop-in(0.6s);
+
+    .notification-header {
+        @include displayFlex(row nowrap, space-between, center);
+        width: 100%;
+    }
+    .notification-body {
+        @include displayFlex(column nowrap, flex-start, flex-start);
+    }
+
 }

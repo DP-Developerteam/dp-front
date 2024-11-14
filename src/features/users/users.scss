@@ -6,6 +6,16 @@
     padding: 10px;
     min-height: 100dvh;
 
+    .title-container {
+        @include displayFlex(row, space-between, center);
+        width: 100%;
+        .button {
+            @include displayFlex(row, center, center);
+            @include hoverPointer();
+            gap: 10px;
+        }
+    }
+
     .items-container {
         @include displayFlex(column, flex-start, flex-start);
         gap: 10px;
@@ -28,6 +38,7 @@
                 @include displayFlex(column, flex-start, flex-start);
                 gap: 5px;
                 .icon {
+                    @include hoverPointer();
                     height: 20px;
                     width: 20px;
                 }
@@ -55,6 +66,7 @@
     .formContainer {
         overflow-y: auto;
         scroll-behavior: smooth;
+        height: auto;
         max-height: 95dvh;
         @include displayFlex(column nowrap, flex-start, center);
     }
