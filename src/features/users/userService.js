@@ -88,8 +88,6 @@ export const getUserById = async (userId, userToken) => {
 export const editUser = async (userData, userToken) => {
     // Extract userId from the userData object
     const userId = userData._id;
-    console.log("userService userId: ", userId);
-    console.log("userService userToken: ", userToken);
     try {
         // Make a PUT request to update user details
         const response = await api.put(`${API_URL}/edit/${userId}`, userData, {

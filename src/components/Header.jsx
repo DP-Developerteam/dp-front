@@ -49,7 +49,8 @@ function Header() {
         // Close Menu
         closeMenu();
         // Redirect to SignIn
-        navigate('/signin');
+        navigate('/crm');
+        window.location.reload();
     };
     // REDUX Variable to know if user is logged in or not. Used to render of the buttons.
     const { isLoggedIn } = useSelector((state) => state.user);

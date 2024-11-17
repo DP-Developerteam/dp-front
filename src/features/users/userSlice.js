@@ -8,16 +8,25 @@ import { setAuthToken } from '../api';
 // Create an async thunk for SignIn
 export const signInThunk = createAsyncThunk(
     'user/signIn',
-    async (credentials, { dispatch }) => {
-        const response = await signinUser(credentials);
-        // Dispatch the setUser action after a successful response
-        dispatch(setUser({
-            userId: response._id,
-            token: response.token,
-            role: response.role,
-            tokenExpiryTime: response.expiresIn * 1000 // Set expiry time in milliseconds
-        }));
-        return response;
+    async (credentials, { dispatch, rejectWithValue }) => {
+        try {
+            // Make the API call
+            const response = await signinUser(credentials);
+            // Dispatch the setUser action after a successful response
+            dispatch(setUser({
+                userId: response._id,
+                token: response.token,
+                role: response.role,
+                tokenExpiryTime: response.expiresIn * 1000 // Set expiry time in milliseconds
+            }));
+            // Return response for any additional processing in components
+            return response;
+        } catch (error) {
+            // Handle errors and provide a readable message for the frontend
+            return rejectWithValue(
+                error.response?.data || { message: 'An unexpected error occurred.' }
+            );
+        }
     }
 );
 

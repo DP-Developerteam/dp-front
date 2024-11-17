@@ -1,75 +1,75 @@
 // Import styles and libraries
-// import '../../../App.scss'; -> it's imported in users.scss
-import '../users.scss';
+// import '../../../App.scss'; -> it's imported in tasks.scss
+import '../tasks.scss';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-// Import the function to fetch users
-import { getUsers } from '../userService';
+// Import the function to fetch tasks
+import { getTasks } from '../taskService';
 // Import components
-import FilterUserBar from '../components/FilterUserBar';
-import DeleteUserForm from '../components/DeleteUserForm';
-import EditUserForm from '../components/EditUserForm';
-import SignUpForm from '../components/SignUpForm';
+import CreateTaskForm from '../components/CreateTaskForm';
+import DeleteTaskForm from '../components/DeleteTaskForm';
+import EditTaskForm from '../components/EditTaskForm';
+import FilterTaskBar from '../components/FilterTaskBar';
 import Notifications from '../../../components/Notifications';
 // Import assets
 import iconDelete from '../../../assets/img/icon-delete.svg';
 import iconEdit from '../../../assets/img/icon-edit.svg';
 import iconAdd from '../../../assets/img/icon-add.svg';
 
-const Users = () => {
-    // Array to store and filter user data
-    const [users, setUsers] = useState([]);
-    const [allUsers, setAllUsers] = useState([]);
+function Tasks() {
+    // Access task token from Redux
+    const { token } = useSelector((state) => state.user);
+    // States for tasks data
+    const [tasks, setTasks] = useState([]);
+    const [allTasks, setAllTasks] = useState([]);
     // State for loading and error handling
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
-    // Access user token from Redux
-    const { token } = useSelector((state) => state.user);
-    // States for modals and selected user
+    // States for modals and selected task
     const [deleteModal, setDeleteModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
     const [createModal, setCreateModal] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedTask, setSelectedTask] = useState(null);
     // States for notifications
     const [notificationModal, setNotificationModal] = useState(false);
     const [notificationType, setNotificationType] = useState('');
 
-
-    // useEffect hook to fetch users when the component mounts
+    // useEffect hook to fetch tasks when the component mounts
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchTasks = async () => {
             try {
-                // Call the getUsers function to retrieve user data
-                const usersData = await getUsers(token);
-                // Update the users state with the fetched data
-                setUsers(usersData);
-                setAllUsers(usersData);
+                // Call the getTasks function to retrieve task data
+                const tasksData = await getTasks(token);
+                // Update the tasks state with the fetched data
+                setTasks(tasksData);
+                setAllTasks(tasksData);
+                // console.log("ALL TASKS: ", allTasks);
             } catch (error) {
                 // Set the error state with a relevant message, falling back to a default
-                setErrorMessage(error.response?.data.message || "Failed to load users.");
+                setErrorMessage(error.response?.data.message || "Failed to load tasks.");
             } finally {
                 // Set loading to false after the fetch attempt (successful or failed)
                 setLoading(false);
             }
         };
-        // Invoke the fetchUsers function to initiate data fetching
-        fetchUsers();
+        // Invoke the fetchTasks function to initiate data fetching
+        fetchTasks();
     }, [token]);
 
-    // DELETE. Selected user and show delete modal
-    const selectUserDelete = (user) => {
-        setSelectedUser(user);
+    // DELETE. Selected task and show delete modal
+    const selectTaskDelete = (task) => {
+        setSelectedTask(task);
         setDeleteModal(true);
     };
 
-    // EDIT. Set the selected user and show edit modal
-    const selectUserEdit = (user) => {
-        setSelectedUser(user);
+    // EDIT. Set the selected task and show edit modal
+    const selectTaskEdit = (task) => {
+        setSelectedTask(task);
         setEditModal(true);
     };
 
     // CREATE. Show create modal
-    const createUser = () => {
+    const createTask = () => {
         setCreateModal(true);
     };
 
@@ -89,7 +89,7 @@ const Users = () => {
         setDeleteModal(false);
         setEditModal(false);
         setCreateModal(false);
-        setSelectedUser(null);
+        setSelectedTask(null);
     };
 
     // Conditional rendering based on loading and error states
@@ -98,31 +98,32 @@ const Users = () => {
     // Display error message if fetching failed
     if (errorMessage) return <div>{errorMessage}</div>;
 
-    // Render the list of users or a message if no users are found
+    // Render the list of tasks or a message if no tasks are found
     return (
-        <div className='users-page crud-page'>
+        <div className='tasks-page crud-page'>
             <div className='title-container'>
-                <h1 className='title'>Users</h1>
-                <button className="button" onClick={() => createUser()}>
-                    Create user <img className='icon' src={iconAdd} alt='delete icon' width='20px' height='20px'/>
+                <h1 className='title'>Tasks</h1>
+                <button className="button" onClick={() => createTask()}>
+                    Create task <img className='icon' src={iconAdd} alt='delete icon' width='20px' height='20px'/>
                 </button>
             </div>
             <div className='filter-bar-container'>
-                <FilterUserBar allUsers={allUsers} setUsers={setUsers} />
+                <FilterTaskBar allTasks={allTasks} setTasks={setTasks} />
             </div>
-            {users.length > 0 ? (
+            {tasks.length > 0 ? (
                 <ul className='items-container'>
-                    {users.map((user) => (
-                        <li key={user._id} className='item'>
+                    {tasks.map((task) => (
+                        <li key={task._id} className='item'>
                             <div className='text-container'>
-                                <p className='paragraph bold'>{user.name}</p>
-                                <p className='paragraph'>{user.company}</p>
+                                <p className='paragraph bold'>{task.client.name}</p>
+                                <p className='paragraph description'>{task.dateStart}</p>
+                                <p className='paragraph description'>{task.description}</p>
                             </div>
                             <div className='buttons-container'>
-                                <button className='icon' onClick={() => selectUserDelete(user)}>
+                                <button className='icon' onClick={() => selectTaskDelete(task)}>
                                     <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px'/>
                                 </button>
-                                <button className='icon' onClick={() => selectUserEdit(user)}>
+                                <button className='icon' onClick={() => selectTaskEdit(task)}>
                                     <img className='icon' src={iconEdit} alt='edit icon' width='20px' height='20px'/>
                                 </button>
                             </div>
@@ -130,7 +131,7 @@ const Users = () => {
                     ))}
                 </ul>
             ) : (
-                <p>No users found.</p>
+                <p>No tasks found.</p>
             )}
 
             {notificationModal && (
@@ -140,34 +141,34 @@ const Users = () => {
                 />
             )}
             {createModal && (
-                <SignUpForm
+                <CreateTaskForm
                     onCloseModals={closeModals}
-                    onSave={(createdUser) => {
-                        setAllUsers((prevUsers) => [...prevUsers, createdUser]);
+                    onSave={(createdTask) => {
+                        setAllTasks((prevTasks) => [...prevTasks, createdTask]);
                         closeModals();
                         notification('create');
                     }}
                 />
             )}
-            {deleteModal && selectedUser && (
-                <DeleteUserForm
-                    user={selectedUser}
+            {deleteModal && selectedTask && (
+                <DeleteTaskForm
+                    task={selectedTask}
                     onCloseModals={closeModals}
-                    onSave={(userId) => {
-                        setAllUsers((prevUsers) => prevUsers.filter(user => user._id !== userId));
+                    onSave={(taskId) => {
+                        setAllTasks((prevTasks) => prevTasks.filter(task => task._id !== taskId));
                         closeModals();
-                        notification('delete');
+                        notification('delete-task');
                     }}
                     />
                 )}
-            {editModal && selectedUser && (
-                <EditUserForm
-                user={selectedUser}
-                onCloseModals={closeModals}
-                onSave={(updatedUser) => {
-                        setAllUsers(prevUsers => prevUsers.map(user => user._id === updatedUser._id ? updatedUser : user));
+            {editModal && selectedTask && (
+                <EditTaskForm
+                    task={selectedTask}
+                    onCloseModals={closeModals}
+                    onSave={(updatedTask) => {
+                        setAllTasks(prevTasks => prevTasks.map(task => task._id === updatedTask._id ? updatedTask : task));
                         closeModals();
-                        notification('edit');
+                        notification('edit-task');
                     }}
                 />
             )}
@@ -175,4 +176,4 @@ const Users = () => {
     );
 };
 
-export default Users;
+export default Tasks

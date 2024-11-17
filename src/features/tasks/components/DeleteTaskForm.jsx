@@ -1,36 +1,35 @@
 import '../../../App.scss';
 import React, { useState } from 'react';
 //Import functions
-import { deleteUser } from '../userService';
-// Access user token from Redux
+import { deleteTask } from '../taskService';
+// Access task token from Redux
 import { useSelector } from 'react-redux';
 // Import assets
 import iconClose from '../../../assets/img/icon-close.svg';
 
-
-function DeleteUserForm({ user, onCloseModals, onSave }) {
+const DeleteTaskForm = ({task, onCloseModals, onSave}) => {
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const { token } = useSelector((state) => state.user);;
-    const userId = user._id;
+    const taskId = task._id;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
 
         try {
-            // Directly calling deleteUser
-            const response = await deleteUser(userId, token);
+            // Directly calling deleteTask
+            const response = await deleteTask(taskId, token);
             // Check response
             if (response && response.message) {
-                const userId = response.result;
+                const taskId = response.result;
                 setSuccessMessage(response.message);
                 console.log("response message delete", response.message);
-                onSave(userId);
+                onSave(taskId);
             }
-            // TODO: I don't know why, but this refresh the UsersList
+            // TODO: I don't know why, but this refresh the tasksList
             if (response) {
-                onSave(userId);
+                onSave(taskId);
             }
         } catch (error) {
             const message = error.response?.data?.message || 'An error occurred during sign up.';
@@ -42,7 +41,7 @@ function DeleteUserForm({ user, onCloseModals, onSave }) {
         <div className="modal-overlay">
             <div className="form-container">
                 <header className="form-header">
-                    <h2>Delete user</h2>
+                    <h2>Delete task</h2>
                     <button className="button" type="button" onClick={onCloseModals}>
                         <img className='icon' src={iconClose} alt='delete icon' width='20px' height='20px'/>
                     </button>
@@ -50,19 +49,23 @@ function DeleteUserForm({ user, onCloseModals, onSave }) {
                 <div className='form-body'>
                     <div className='form-group'>
                         <div className='form-field'>
-                            <p>Are you sure you want to delete the following user?</p>
+                            <p>Are you sure you want to delete the following task?</p>
                         </div>
                         <div className='form-field'>
-                            <label>User ID:</label>
-                            <input type="text" value={user._id} readOnly={true} />
+                            <label>Task ID:</label>
+                            <input type="text" value={task._id} readOnly={true} />
                         </div>
                         <div className='form-field'>
-                            <label>User name:</label>
-                            <input type="text" value={user.name} readOnly={true} />
+                            <label>Task client name:</label>
+                            <input type="text" value={task.client.name} readOnly={true} />
                         </div>
                         <div className='form-field'>
-                            <label>User company:</label>
-                            <input type="text" value={user.company} readOnly={true} />
+                            <label>Task date:</label>
+                            <input type="text" value={task.dateStart} readOnly={true} />
+                        </div>
+                        <div className='form-field'>
+                            <label>Task description:</label>
+                            <input type="text" value={task.description} readOnly={true} />
                         </div>
                     </div>
                 </div>
@@ -77,4 +80,4 @@ function DeleteUserForm({ user, onCloseModals, onSave }) {
     );
 }
 
-export default DeleteUserForm;
+export default DeleteTaskForm

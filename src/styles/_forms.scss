@@ -3,112 +3,97 @@
 @import './general.scss';
 @import './helpers.scss';
 
-.formContainer {
-    @include displayFlex(column wrap, flex-start, flex-start);
-    // width: 100%;
-    height: 100%;
-    gap: 20px;
-    background-color: #ececec;
-    padding: 10px 10px;
-    border-radius: 15px;
+//Most forms are inside of a modal.
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
-    .formHeader {
+.form-container {
+    @include displayFlex(column nowrap, flex-start, center);
+    gap: 20px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    height: auto;
+    max-height: 95dvh;
+    background-color: $color-light;
+    padding: 15px 10px;
+    border-radius: 15px;
+    .form-header {
         @include displayFlex(row wrap, space-between, center);
         width: 100%;
     }
-
-    .formBody {
+    .form-body {
         @include displayFlex(column wrap, flex-start, flex-start);
         gap: 10px;
-
-        .formGroup {
+        .form-group {
             @include displayFlex(column wrap, flex-start, flex-start);
             gap: 10px;
-
             .form-field {
                 @include displayFlex(column nowrap, flex-start, flex-start);
                 gap: 5px;
-                // width: 350px;
                 width: 90dvw;
-
                 label, input[type="text"], input[type="password"], select {
                     width: 100%
                 }
                 label {
-                    @include font(0.8rem, 300, $color-dark);
+                    @include font(0.8rem, 400, $color-dark);
                     text-align: start;
                 }
-                input[type="text"], input[type="password"], select {
-                    @include font(1rem, 300, $color-dark);
+                input[type="text"], input[type="password"], select, .custom-dropdown {
+                    @include font(1rem, 400, $color-dark);
+                    background-color: $color-background;
                     padding: 15px 5px;
                     border-radius: 5px;
                     border: none;
                 }
-                select {
-                    @include hoverPointer();
-                }
-
-                //############################
-                //DELETE LATER
-                select {
-                    @include font(1rem, 300, $color-dark);
-                    padding: 15px 5px;
-                    border-radius: 5px;
-                    border: none;
-                    background-color: white; // Set background for the select input
-                    position: relative;
-
-                    /* Remove default dropdown appearance */
-                    appearance: none;
-                    -webkit-appearance: none;
-                    -moz-appearance: none;
-                }
-                select:focus {
-                    outline: none; // Optional, removes the default focus outline
-                    border: 2px solid $color-dark; // Custom focus styling
-                }
-                //############################
-
-
-                .commentsContainer {
+                .comments-container {
                     @include displayFlex(row nowrap, space-between, center);
                     gap: 10px;
                     width: 100%;
-
-                    .buttonIcon {
+                    .button-icon {
+                        @include hoverPointer();
                         background-color: $color-background;
                         padding: 15px;
                         border-radius: 5px;
-                        // height: 100%;
                     }
-
-                    .buttonsContainer {
+                    .buttons-container {
                         @include displayFlex(row nowrap, center, center);
                         gap: 10px;
                     }
                 }
-
-                .commentsList {
+                .comments-list {
                     @include displayFlex(column nowrap, center, center);
                     gap: 15px;
                     width: 100%;
                     margin: 10px 0;
-
-                    .commentsContainer {
+                    .comments-container {
                         align-items: flex-start;
+                        .buttons-container {
+                            .button-icon {
+                                padding: 0;
+                            }
+                        }
                     }
                 }
             }
         }
     }
-
-    .formFooter {
+    .form-footer {
         width: 100%;
-
         .error-message {
             @include font(0.8rem, 300, $color-dark);
         }
-
         .button {
             @include button($color-background, $color-dark);
             width: 100%;
@@ -116,29 +101,25 @@
             margin-top: 10px;
         }
     }
-
     .button {
         @include displayFlex(column nowrap, center, center);
         @include hoverPointer();
     }
-
     @media (min-width: 810px) {
-        max-height: 650px;
+        max-height: fit-content;
         gap: 20px;
         padding: 30px 30px;
         border-radius: 35px;
-
-        .formBody {
+        .form-body {
             @include displayFlex(row wrap, flex-start, flex-start);
             gap: 30px;
-            .formGroup {
+            .form-group {
                 @include displayFlex(column wrap, flex-start, flex-start);
                 gap: 10px;
                 .form-field {
                     width: 350px;
                 }
             }
-
             @media (min-width: 950px ) {
                 :nth-child(even) {
                     .form-field {
@@ -147,8 +128,7 @@
                 }
             }
         }
-
-        .formFooter {
+        .form-footer {
             width: 100%;
             .button {
                 width: 100%;
@@ -160,42 +140,75 @@
 .filter-bar-container {
     @include displayFlex(row nowrap, space-between, flex-end);
     width: 100%;
-    max-width: 500px;
-
+    // max-width: 500px;
     .filter-bar {
-        @include displayFlex(row nowrap, space-between, flex-end);
+        @include displayFlex(column nowrap, flex-start, flex-start);
         gap: 10px;
         width:100%;
-
-        .form-field {
-            @include displayFlex(row nowrap, flex-start, center);
+        .form-group {
+            @include displayFlex(row nowrap, space-between, center);
             gap: 10px;
             width: 100%;
-            label {
-                @include displayFlex(row, center, center);
-                @include font(0.8rem, 300, $color-dark);
-                width: 30px;
-                height: 30px;
-            }
-            input[type="text"] {
+            .form-field {
+                @include displayFlex(row nowrap, flex-start, center);
+                gap: 10px;
                 width: 100%;
+                label {
+                    @include displayFlex(row, center, center);
+                    @include font(0.8rem, 300, $color-dark);
+                    width: 30px;
+                    height: 30px;
+                }
+                input[type="text"], select {
+                    width: 100%;
+                }
+                input[type="text"], select, .toggle {
+                    @include font(1rem, 300, $color-dark);
+                    background-color: $color-background;
+                    height: 52px;
+                    padding: 0 5px;
+                    border-radius: 5px;
+                    border: none;
+                }
+                select, .toggle {
+                    @include hoverPointer();
+                }
+                .toggle {
+                    @include displayFlex(row nowrap, center, center);
+                    width: 100%;
+                    width: 30px;
+                }
+                .icon {
+                    height: 20px;
+                    width: 20px;
+                }
             }
-            input[type="text"], select {
-                @include font(1rem, 300, $color-dark);
-                padding: 15px 5px;
-                border-radius: 5px;
-                border: none;
+            .search-bar {
+                flex-shrink: 1;
             }
-            select {
-                @include hoverPointer();
-            }
-            .icon {
-                height: 20px;
-                width: 20px;
+            .toggle {
+                flex-shrink: 2;
+                width: fit-content;
             }
         }
+        :nth-child(1) {
+            flex-shrink: 1;
+        }
         :nth-child(2) {
-            width: 60px;
+            flex-shrink: 2;
+            :nth-child(1) {
+                flex-shrink: 1;
+                min-width: 49px;
+            }
+            :nth-child(2) {
+                flex-shrink: 1;
+                min-width: 67px;
+            }
+        }
+    }
+    @media (min-width: 766px) {
+        .filter-bar {
+            @include displayFlex(row nowrap, flex-start, flex-start);
         }
     }
 }

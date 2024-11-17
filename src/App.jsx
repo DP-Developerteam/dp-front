@@ -8,25 +8,27 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './store/store.js';
 //Pages
 import AboutDiego from './pages/AboutDiego.jsx';
+import AreaCRM from './pages/AreaCRM.jsx';
 import GraphicDesign from './pages/GraphicDesign.jsx';
 import Homepage from './pages/Homepage.jsx';
 import Portfolio from './pages/Portfolio.jsx';
 import WebDevelopment from './pages/WebDevelopment.jsx';
-// User Pages
+// User & Tasks Pages
 import Users from './features/users/pages/Users.jsx';
-import SignIn from './features/users/pages/SignIn.jsx';
+import Tasks from './features/tasks/pages/Tasks.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout/>}>
         <Route index element={<Homepage />}/>
         <Route path="about" element={<AboutDiego />}/>
+        <Route path="crm" element={<AreaCRM />}/>
         <Route path="graphic" element={<GraphicDesign />}/>
         <Route path="home" element={<Homepage />}/>
         <Route path="portfolio" element={<Portfolio />}/>
         <Route path="webdevelopment" element={<WebDevelopment />}/>
         <Route path="users" element={<Users />} />
-        <Route path="signin" element={<SignIn />} />
+        <Route path="tasks" element={<Tasks />} />
     </Route>
   ),
   {

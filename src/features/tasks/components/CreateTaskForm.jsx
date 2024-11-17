@@ -2,14 +2,13 @@
 import '../../../App.scss';
 import React, { useState } from 'react';
 //Import functions
-import { signupUser } from '../userService';
+import { createTask } from '../taskService';
 // Access user token from Redux
 import { useSelector } from 'react-redux';
 // Import assets
 import iconClose from '../../../assets/img/icon-close.svg';
 
-
-const SignUpForm = ({onCloseModals, onSave}) => {
+const CreateTaskForm = ({onCloseModals, onSave}) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -32,7 +31,7 @@ const SignUpForm = ({onCloseModals, onSave}) => {
 
         try {
             // Directly calling signupUser
-            const response = await signupUser(formData, token);
+            const response = await createTask(formData, token);
             // Check response
             if (response && response.message) {
                 const createdUser = response.result;
@@ -45,7 +44,6 @@ const SignUpForm = ({onCloseModals, onSave}) => {
             setErrorMessage(message);
         }
     };
-
 
     return (
         <div className="modal-overlay">
@@ -118,7 +116,7 @@ const SignUpForm = ({onCloseModals, onSave}) => {
                 </footer>
             </form>
         </div>
-    );
-};
+    )
+}
 
-export default SignUpForm;
+export default CreateTaskForm

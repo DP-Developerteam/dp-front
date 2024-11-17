@@ -1,21 +1,26 @@
 // Import styles and libraries
-import '../../../App.scss';
+// import '../../../App.scss';
+import '../users.scss';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-//REDUX imports
+// Importt REDUX
 import { useDispatch } from 'react-redux';
 import { clearUser, signInThunk } from '../userSlice';
 
 
 
-const SignInForm = () => {
+
+const SignInForm = ({ onSignInSuccess }) => {
+    // COMMENT TODO
     const [formData, setFormData] = useState({
         username: '',
         password: '',
     });
-    const [errorMessage, setErrorMessage] = useState('');
+    // COMMENT TODO
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    // State for loading and error handling
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -32,14 +37,16 @@ const SignInForm = () => {
 
             // Variables to manage the SignIn
             const userToken = action.token;
-            const userRole = action.role;
+            // const userRole = action.role;
             const expiresIn = action.expiresIn * 1000;
             // const alertExpires = expiresIn - 20; // alert pop ups when there are 20 seconds for the auto signOut
 
             if (userToken) {
+                // Show success SignIn notification
+                onSignInSuccess();
 
                 //Conditional to redirect based on role after login
-                navigate(userRole === 'admin' ? '/users' : '/');
+                // navigate(userRole === 'admin' ? '/crm' : '/');
                 // navigate('/users');
 
                 setTimeout(() => {
@@ -52,20 +59,19 @@ const SignInForm = () => {
             }
 
         } catch (error) {
-            console.error('Sign-in error:', error); // Log the entire error object
-            setErrorMessage(error.response?.data?.message || 'An error occurred during sign in.');
+            setErrorMessage(error?.message || 'An error occurred during sign in.');
         }
     };
 
     return (
         <div className='page'>
-            <form onSubmit={handleSubmit} className='formContainer'>
-                <header className='formHeader'>
+            <form onSubmit={handleSubmit} className='form-container'>
+                <header className='form-header'>
                     <h2>Signin</h2>
-                    <p>Cancel</p>
+                    <a href="/">Cancel</a>
                 </header>
-                <div className='formBody'>
-                    <div className='formGroup'>
+                <div className='form-body'>
+                    <div className='form-group'>
                         <div className='form-field'>
                             <label>Email:</label>
                             <input
@@ -87,7 +93,7 @@ const SignInForm = () => {
                         </div>
                     </div>
                 </div>
-                <footer className='formFooter'>
+                <footer className='form-footer'>
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
                     <button className='button' type="submit">Login</button>
                 </footer>

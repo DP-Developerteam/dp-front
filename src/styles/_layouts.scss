@@ -1,0 +1,288 @@
+@import './colors.scss';
+@import './fonts.scss';
+@import './general.scss';
+@import './helpers.scss';
+
+
+// LAYOUT HERO
+.page {
+    .hero {
+        min-height: calc(100dvh - 250px);
+        // calc(100vh - 50px); 50px for the navbar on phone
+    }
+}
+// LAYOUT HERO - BIG TITLE
+.page {
+    .hero {
+        min-height: calc(100dvh - 250px);
+    }
+    .layout-big-title {
+        @include displayFlex(column wrap, space-between, center);
+        gap: 160px;
+        width: 100%;
+        padding-top: 60px;
+        padding-bottom: 60px;
+        padding: 60px 20px 60px 20px;
+        .intro-text {
+            width: 100%;
+            max-width: 900px;
+            gap: 20px;
+            .name-tag {
+                @include font(14px, 400, $color-dark);
+                text-align: start;
+                width: 100%;
+            }
+            .description-container {
+                @include displayFlex(column wrap, flex-start, flex-start);
+                gap: 10px;
+                width: 100%;
+                max-width: 900px;
+                .description-tag {
+                    @include displayFlex(row wrap, flex-start, center);
+                    @include font(14px, 400, $color-dark);
+                }
+                .hover {
+                    @include hoverPointer();
+                    gap: 10px;
+                    .dot {
+                        display: none;
+                        background-color: $color-secondary;
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                    }
+                    .contact {
+                        @include font(12px, 600, $color-secondary);
+                        display: none;
+                    }
+                    &:hover {
+                        @include font(12px, 600, $color-secondary);
+                        text-decoration: underline;
+                        .dot {
+                            display: block;
+                        }
+                    }
+                }
+            }
+        }
+        .title-tag {
+            @include font(4rem, 800, $color-dark);
+            line-break:strict;
+            text-align: end;
+            line-height: 3.5rem;
+            width: 100%;
+            max-width: 900px;
+            .color {
+                color: $color-secondary;
+            }
+        }
+    }
+    @media (min-width: 430px) {
+        .title-tag {
+            @include font(6rem, 800, $color-dark);
+            line-height: 5.5rem;
+        }
+    }
+}
+
+// LAYOUT HERO - BIG CARD
+.page {
+    .layout-big-card {
+        width: 90%;
+        max-width: 900px;
+        padding: 40px;
+        margin-top: -110px;
+        border: none;
+        border-radius: 20px;
+        background-color: $color-background;
+        filter: drop-shadow(0px -1px 16px #00000020);
+        @include fade-in(entry 150px);
+        .items-container {
+            justify-content: space-between;
+            height: 100%;
+            width: 100%;
+            gap: 20px;
+            .item {
+                flex-grow: 1;
+                height: 100%;
+                gap: 10px;
+                .img {
+                    object-fit: cover;
+                    width: 100%;
+                    height: auto;
+                    max-height: 400px;
+                    border-radius: 15px;
+                    background-color: $color-light;
+                }
+            }
+            :nth-child(2) {
+                flex-grow: 2;
+            }
+        }
+    }
+
+}
+
+// LAYOUT BENTO - text & boxes container
+.page {
+    .layout-bento {
+        gap: 30px;
+        padding: 0 10px;
+        .text-boxes-container {
+            gap: 20px;
+            @include fade-in(entry 150px);
+            .text-container {
+                gap: 10px;
+                width:100%;
+                max-width: 400px;
+            }
+            .boxes-container {
+                flex-flow: row nowrap;
+                gap: 20px;
+                .box {
+                    position: relative;
+                    width: 165px;
+                    height: 165px;
+                    border-radius: 10px;
+                    background-color: $color-background;
+                    padding: 20px;
+                    .icon {
+                        position: absolute;
+                        display: block;
+                        top: 10px;
+                        width: 60px;
+                        height: 60px;
+                        border-radius: 50%;
+                        background-color: $color-secondary;
+                    }
+                    .top-right {
+                        right: 10px;
+                    }
+                    .top-left {
+                        left: 10px;
+                    }
+                }
+                .box-large {
+                    width: calc(100dvw - 20px);
+                    max-width: 480px;
+                }
+            }
+        }
+    }
+
+    @media (min-width: 560px) {
+        .layout-bento {
+            gap: 20px;
+            width: 90%;
+            max-width: 900px;
+            .text-boxes-container {
+                gap: 20px;
+                @include fade-in(50px 600px);
+                .boxes-container {
+                    gap: 20px;
+                    .box {
+                        width: 230px;
+                        height: 230px;
+                        border-radius: 20px;
+                        .icon {
+                            position: absolute;
+                            display: block;
+                            top: 20px;
+                            width: 70px;
+                            height: 70px;
+                        }
+                        .top-right {
+                            right: 20px;
+                        }
+                        .top-left {
+                            left: 20px;
+                        }
+                    }
+                    .box-large {
+                        width: 480px;
+                    }
+                }
+            }
+        }
+    }
+    @media (min-width: 820px) {
+        .layout-bento {
+            .text-boxes-container {
+                flex-flow: row nowrap;
+                .text-container {
+                    // width:100%;
+                    max-width: 400px;
+                }
+                .boxes-container {
+                    .box {
+                        width: 230px;
+                        height: 230px;
+                    }
+                    .box-large {
+                        width: 480px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// LAYOUT CRM - rendering boxes from different collections.
+.layout-crm {
+    @include displayFlex(column wrap, center, flex-start);
+    gap: 32px;
+    width: 100%;
+    // LAYOUT CRUD
+    .crud-page {
+        @include displayFlex(column wrap, flex-start, flex-start);
+        gap: 24px;
+        padding: 10px;
+        width: 100%;
+        max-width: 900px;
+        .title-container {
+            @include displayFlex(row nowrap, space-between, center);
+            width: 100%;
+            .button {
+                @include displayFlex(row nowrap, center, center);
+                @include hoverPointer();
+                gap: 10px;
+            }
+        }
+        .items-container {
+            @include displayFlex(column wrap, flex-start, flex-start);
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+            .item {
+                @include displayFlex(row nowrap, space-between, flex-start);
+                width: 100%;
+                gap: 10px;
+                padding: 10px;
+                background-color: $color-background;
+                border-radius: 5px;
+                .text-container {
+                    @include displayFlex(column, flex-start, flex-start);
+                    width: 100%;
+                    gap: 5px;
+                }
+                .buttons-container {
+                    @include displayFlex(column, flex-start, flex-start);
+                    gap: 10px;
+                    .icon {
+                        @include hoverPointer();
+                        height: 20px;
+                        width: 20px;
+                    }
+                }
+            }
+        }
+    }
+    @media (min-width: 766px) {
+        flex-flow: row nowrap;
+        .crud-page {
+            .items-container {
+                max-width: 100%;
+            }
+        }
+    }
+}

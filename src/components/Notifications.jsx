@@ -18,8 +18,10 @@ function Notifications({type, onCloseNotification}) {
     });
     // Define a message based on the type
     const notificationMessage
-        = type === 'edit'
-        ? "User UPDATED successfully"
+        = type === 'signin'
+        ? "User SIGNIN successfully"
+        : type === 'edit'
+        ? "User EDITED successfully"
         : type === 'delete'
         ? "User DELETED successfully"
         : type === 'create'

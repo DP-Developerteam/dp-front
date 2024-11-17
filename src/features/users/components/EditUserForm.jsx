@@ -5,9 +5,10 @@ import { useSelector } from 'react-redux';
 // Import service
 import { editUser } from '../userService';
 // Import assets
+import iconAdd from '../../../assets/img/icon-add.svg';
+import iconClose from '../../../assets/img/icon-close.svg';
 import iconDelete from '../../../assets/img/icon-delete.svg';
 import iconEdit from '../../../assets/img/icon-edit.svg';
-import iconClose from '../../../assets/img/icon-close.svg';
 
 const EditUserForm = ({ user, onCloseModals, onSave }) => {
     const { token, userId } = useSelector((state) => state.user); // Get token and user id
@@ -22,7 +23,7 @@ const EditUserForm = ({ user, onCloseModals, onSave }) => {
     });
 
     const [createComment, setCreateComment] = useState('');
-    const [editingComment, setEditingComment] = useState(null); // Índice del comentario que estamos editando
+    const [editingComment, setEditingComment] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -129,18 +130,19 @@ const EditUserForm = ({ user, onCloseModals, onSave }) => {
 
         // Si no hay cambios en los datos, no enviamos la solicitud
         if (JSON.stringify(filteredFormData) === JSON.stringify(user)) {
-            console.log('No changes detected.');
             return;  // No hacemos la solicitud si no hay cambios
         }
 
-        // Debugging: Verificar los datos que se van a enviar
-        console.log('filteredFormData:', filteredFormData);
-
         try {
-            // Llamamos al servicio para actualizar el usuario
-            await editUser(filteredFormData, token);
-            setSuccessMessage('User updated successfully!');
-            onSave(filteredFormData);
+            // Directly calling editUser
+            const response = await editUser(filteredFormData, token);
+            // Check response
+            if (response && response.message) {
+                const editedUser = response.result;
+                setSuccessMessage(response.message);
+                onSave(editedUser);
+            }
+            // onSave(filteredFormData);
         } catch (error) {
             console.error('Error updating user:', error);
             const message = error.response?.data?.message || 'An error occurred while updating the user.';
@@ -150,15 +152,15 @@ const EditUserForm = ({ user, onCloseModals, onSave }) => {
 
     return (
         <div className="modal-overlay">
-                <form className="formContainer" onSubmit={handleSubmit}>
-                    <header className="formHeader">
+                <form className="form-container" onSubmit={handleSubmit}>
+                    <header className="form-header">
                         <h2>Edit User</h2>
                         <button className="button" type="button" onClick={onCloseModals}>
                             <img className='icon' src={iconClose} alt='delete icon' width='20px' height='20px'/>
                         </button>
                     </header>
-                    <div className='formBody'>
-                        <div className='formGroup'>
+                    <div className='form-body'>
+                        <div className='form-group'>
                             <div className='form-field'>
                                 <label>Name:</label>
                                 <input
@@ -207,28 +209,28 @@ const EditUserForm = ({ user, onCloseModals, onSave }) => {
                                 </select>
                             </div>
                         </div>
-                        <div className='formGroup'>
+                        <div className='form-group'>
                             <div className='form-field'>
                                 <label>Comments:</label>
-                                <div className='commentsContainer'>
+                                <div className='comments-container'>
                                     <input
                                         type="text"
                                         value={createComment}
                                         onChange={handleCommentChange}
                                     />
-                                    <button className='buttonIcon' type="button" onClick={editingComment !== null ? saveEditedComment : addComment}>
-                                        {editingComment !== null ? 'Update' : 'Create'}
+                                    <button className='button-icon' type="button" onClick={editingComment !== null ? saveEditedComment : addComment}>
+                                        {editingComment !== null ? 'Update' : <img className='icon' src={iconAdd} alt='delete icon' width='20px' height='20px'/>}
                                     </button>
                                 </div>
-                                <ul className='commentsList'>
+                                <ul className='comments-list'>
                                     {formData.comments.map((comment, index) => (
-                                        <li key={index} className='commentsContainer'>
+                                        <li key={index} className='comments-container'>
                                             {comment}
-                                            <div className='buttonsContainer'>
-                                                <button type="button" onClick={() => editComment(index)}>
+                                            <div className='buttons-container'>
+                                                <button className='button-icon' type="button" onClick={() => editComment(index)}>
                                                     <img className='icon' src={iconEdit} alt='delete icon' width='20px' height='20px'/>
                                                 </button>
-                                                <button type="button" onClick={() => removeComment(index)}>
+                                                <button className='button-icon' type="button" onClick={() => removeComment(index)}>
                                                     <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px'/>
                                                 </button>
                                             </div>
@@ -238,7 +240,7 @@ const EditUserForm = ({ user, onCloseModals, onSave }) => {
                             </div>
                         </div>
                     </div>
-                    <footer className='formFooter'>
+                    <footer className='form-footer'>
                         {successMessage && <p className="error-message">{successMessage}</p>}
                         {errorMessage && <p className="error-message">{errorMessage}</p>}
                         <button className="button" type="submit">Update User</button>

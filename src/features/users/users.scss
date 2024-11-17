@@ -1,56 +1,10 @@
 @import '../../App.scss';
 
-.users-page {
-    @include displayFlex(column, flex-start, flex-start);
-    gap: 40px;
-    padding: 10px;
-    min-height: 100dvh;
-
-    .title-container {
-        @include displayFlex(row, space-between, center);
-        width: 100%;
-        .button {
-            @include displayFlex(row, center, center);
-            @include hoverPointer();
-            gap: 10px;
-        }
-    }
-
-    .items-container {
-        @include displayFlex(column, flex-start, flex-start);
-        gap: 10px;
-        width: 100%;
-        max-width: 500px;
-
-        .item {
-            @include displayFlex(row nowrap, space-between, flex-start);
-            width: 100%;
-            gap: 10px;
-            padding: 10px;
-            background-color: $color-background;
-            border-radius: 5px;
-
-            .text-container {
-                @include displayFlex(column, flex-start, flex-start);
-                gap: 5px;
-            }
-            .buttons-container {
-                @include displayFlex(column, flex-start, flex-start);
-                gap: 5px;
-                .icon {
-                    @include hoverPointer();
-                    height: 20px;
-                    width: 20px;
-                }
-            }
-        }
-    }
-
-    @media (min-width: 800px) {
-        width: 500px;
+@media (min-width: 766px) {
+    .users-page {
+        max-width: 360px !important;
     }
 }
-
 
 .modal-overlay {
     position: fixed;
@@ -64,22 +18,10 @@
     align-items: center;
     z-index: 1000;
     .formContainer {
+        @include displayFlex(column nowrap, flex-start, center);
         overflow-y: auto;
         scroll-behavior: smooth;
         height: auto;
         max-height: 95dvh;
-        @include displayFlex(column nowrap, flex-start, center);
     }
-}
-
-.modal {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    text-align: center;
-}
-
-.modal-buttons button {
-    margin: 0 10px;
 }

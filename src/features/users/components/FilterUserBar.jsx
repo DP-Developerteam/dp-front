@@ -11,10 +11,12 @@ function FilterUserBar({ setUsers, allUsers }) {
         setSearchTerm(e.target.value);
     };
 
-    // Handle sort order change
-    const handleSortChange = (e) => {
-        setSortOrder(e.target.value);
-    };// Define the function to filter and sort users, memoized with useCallback to avoid unnecessary re-creation
+    // Toggle sort order
+    const toggleSortOrder = () => {
+        setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
+    };
+
+    // Define the function to filter and sort users, memoized with useCallback to avoid unnecessary re-creation
     const filterAndSortUsers = useCallback(() => {
         // Make a shallow copy of allUsers array to avoid directly mutating the original
         let filteredUsers = [...allUsers];
@@ -46,22 +48,23 @@ function FilterUserBar({ setUsers, allUsers }) {
 
     return (
         <div className='filter-bar'>
-            <div className='form-field'>
-                <label className='icon'>
-                    <img className='icon' src={iconSearch} alt='delete icon' width='20px' height='20px'/>
-                </label>
-                <input
-                    type="text"
-                    placeholder="name or company"
-                    value={searchTerm}
-                    onChange={handleSearchChange} // Call this function when search term changes
-                />
-            </div>
-            <div className='form-field'>
-                <select value={sortOrder} onChange={handleSortChange}>
-                    <option value="asc">A-Z</option>
-                    <option value="desc">Z-A</option>
-                </select>
+            <div className='form-group'>
+                <div className='form-field search-bar'>
+                    <label className='icon'>
+                        <img className='icon' src={iconSearch} alt='delete icon' width='20px' height='20px'/>
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="name or company"
+                        value={searchTerm}
+                        onChange={handleSearchChange} // Call this function when search term changes
+                    />
+                </div>
+                <div className='form-field toggle'>
+                    <button className='toggle' onClick={toggleSortOrder} >
+                        {sortOrder === 'asc' ? 'A-Z' : 'Z-A'}
+                    </button>
+                </div>
             </div>
         </div>
     );

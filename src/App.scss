@@ -4,26 +4,29 @@
 @import './styles/forms.scss';
 @import './styles/general.scss';
 @import './styles/helpers.scss';
+@import './styles/layouts.scss';
 @import './styles/pages.scss';
 
 body{
     scroll-behavior: smooth;
     background: $color-light;
     @include font(1rem, 400, $color-dark);
-    word-break: normal;
+    word-break: break-word;
+    width: 100%;
 }
-@media (min-width: 820px) {
+// @media (min-width: 820px) {
     .dp-wrapper {
         @include displayFlex(column nowrap, flex-start, center);
         width: 100%;
         min-height: 100dvh;
     }
-}
+// }
 
 .contentDP {
     @include displayFlex(column nowrap, center, center);
     padding: 70px 0px 60px;
     min-height: 100dvh;
+    width: 100%;
 }
 
 @media (min-height: 150dvh) {
