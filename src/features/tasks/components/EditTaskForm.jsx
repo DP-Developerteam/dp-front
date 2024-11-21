@@ -1,97 +1,129 @@
 // Import styles and libraries
 import '../../../App.scss';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-// Import service
-import { editTask } from '../taskService';
+// Import redux and slices
+import { useSelector, useDispatch } from 'react-redux';
+import { editTaskThunk } from '../taskSlice';
+// Import components
+import { useHandleDate } from './useHandleDate';
 // Import assets
 import iconClose from '../../../assets/img/icon-close.svg';
 
 const EditTaskForm = ({task, onCloseModals, onSave}) => {
-    const { token } = useSelector((state) => state.user); // Get token and task id
+    // REDUX
+    const dispatch = useDispatch();
+    const { users: reduxUsers } = useSelector((state) => state.user);
+
+    // States for handling tasks
     const taskId = task._id;
+
     // Set formData when task is updated
     const [formData, setFormData] = useState({
-        name: task.client.name || '',
-        company: task.client.company || '',
+        client: {
+            _id: task.client?._id || '',
+            name: task.client?.name || '',
+            company: task.client?.company || '',
+        },
         dateStart: task.dateStart || '',
         dateEnd: task.dateEnd || '',
         description: task.description || '',
+        _id: task._id,
     });
 
-    const [successMessage, setSuccessMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    // Get Updated name from reduxUsers
+    const getClientName = (clientId) => {
+        const client = reduxUsers.find((user) => user._id === clientId);
+        return client ? client.name : 'Unknown Client';
+    };
+    // Get Updated company from reduxUsers
+    const getClientCompany = (clientId) => {
+        const client = reduxUsers.find((user) => user._id === clientId);
+        return client ? client.company : 'Unknown Client';
+    };
 
+    // HandleDate custom hook
+    const { handleDate } = useHandleDate(setFormData);
+
+    // State for loading and error handling
+    const [errorMessage, setErrorMessage] = useState('');
 
     // Set formData with task data
     useEffect(() => {
         setFormData({
-            name: task.client.name || '',
-            company: task.client.company || '',
+            client: {
+                _id: task.client?._id || '',
+                name: task.client?.name || '',
+                company: task.client?.company || '',
+            },
             dateStart: task.dateStart || '',
             dateEnd: task.dateEnd || '',
             description: task.description || '',
+            _id: task._id,
         });
     }, [task]);
 
     // Handle form input changes
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        const { name, value } = e.target;
+        // Check is client dropdown is being modified
+        if (name === "client._id") {
+            // Update selectedClient separately for the dropdown
+            const selectedClient = reduxUsers.find(user => user._id === value);
+            // Update formData with the selected client and their company
+            setFormData((prevState) => ({
+                ...prevState,
+                client: {
+                    _id: selectedClient?._id || "",
+                    name: selectedClient?.name || "",
+                    company: selectedClient?.company || "",
+                },
+            }));
+        }
+        else {
+            // Update formData without overwriting selectedClient
+            setFormData((prevState) => ({
+                ...prevState,
+                [name]: value,
+            }));
+        }
     };
 
-    // Handle commits
+    // Handle submit
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
-
-        // Creamos una copia de los datos del usuario actual
-        const filteredFormData = {
-            _id: taskId,  // Mantener el ID del usuario
-            ...task,  // Copiar los datos actuales del usuario
-        };
-
-        // Iteramos sobre los campos del formulario y solo agregamos los que no están vacíos
-        Object.keys(formData).forEach((key) => {
-            const value = formData[key];
-
-            // Verificamos que el valor sea una cadena antes de usar trim()
-            if (typeof value === 'string' && value.trim() !== '') {
-                // Si el campo es contraseña y no se ha modificado, no lo agregamos
-                if (key === 'password' && value.trim() === '') {
-                    return;  // No incluir la contraseña si está vacía
-                }
-                filteredFormData[key] = value.trim();
-            } else if (Array.isArray(value) && value.length > 0) {
-                // Si el campo es un array, lo agregamos solo si no está vacío
-                filteredFormData[key] = value;
-            } else if (value !== undefined && value !== null) {
-                // Si el valor no es vacío, undefined o null, lo agregamos tal cual
-                filteredFormData[key] = value;
+        // Filter unchanged fields
+        const updatedFields = Object.keys(formData).reduce((acc, key) => {
+            if (key === 'client') {
+                const clientKeys = ['name', 'company', '_id'];
+                const clientChanged = clientKeys.some(clientKey => formData.client[clientKey] !== task.client[clientKey]);
+                if (clientChanged) acc[key] = formData[key];
+            } else if (formData[key] !== task[key]) {
+                acc[key] = formData[key];
             }
-        });
-
-        // Si no hay cambios en los datos, no enviamos la solicitud
-        if (JSON.stringify(filteredFormData) === JSON.stringify(task)) {
-            return;  // No hacemos la solicitud si no hay cambios
+            return acc;
+        }, {});
+        // Avoid dispatch if no changes are made
+        if (Object.keys(updatedFields).length === 0) {
+            setErrorMessage('No changes detected');
+            console.log(errorMessage);
+            return;
         }
-
+        // Include the task ID
+        const filteredFormData = {
+            _id: taskId,
+            client: {
+                name: formData.client.name,
+                _id: formData.client._id,
+            },
+            ...updatedFields
+        };
+        // Dispatch the editTaskThunk
         try {
-            // Directly calling editTask
-            const response = await editTask(filteredFormData, token);
-            // Check response
-            if (response && response.message) {
-                const editedTask = response.result;
-                setSuccessMessage(response.message);
-                onSave(editedTask);
-            }
-            // onSave(filteredFormData);
+            const response = await dispatch(editTaskThunk(filteredFormData)).unwrap();
+            onSave(response.result);
         } catch (error) {
-            console.error('Error updating task:', error);
-            const message = error.response?.data?.message || 'An error occurred while updating the task.';
-            setErrorMessage(message);
+            setErrorMessage(error || 'Failed to update task.');
         }
     };
 
@@ -107,40 +139,49 @@ const EditTaskForm = ({task, onCloseModals, onSave}) => {
                     <div className='form-body'>
                         <div className='form-group'>
                             <div className='form-field'>
-                                <label>Name:</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
+                                <label>Client:</label>
+                                <select
+                                    name="client._id"
+                                    value={ formData.client._id || '' }
                                     onChange={handleChange}
-                                />
+                                >
+                                    <option value={ formData.client._id || '' }>{getClientName(formData.client._id)}</option>
+                                    {reduxUsers.map((client) => (
+                                        <option key={client._id} value={client._id}>
+                                            {client.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div className='form-field'>
                                 <label>Company:</label>
                                 <input
+                                    disabled
                                     type="text"
                                     name="company"
-                                    value={formData.company}
+                                    value={getClientCompany(formData.client._id)}
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className='form-field'>
-                                <label>Date start:</label>
+                            <div className="form-field">
+                                <label htmlFor="dateStart">Start Date</label>
                                 <input
                                     type="text"
                                     name="dateStart"
                                     value={formData.dateStart}
                                     onChange={handleChange}
                                 />
+                                <button type="button" onClick={() => handleDate('dateStart')}>START</button>
                             </div>
-                            <div className='form-field'>
-                                <label>Date end:</label>
+                            <div className="form-field">
+                                <label htmlFor="dateEnd">End Date</label>
                                 <input
                                     type="text"
                                     name="dateEnd"
                                     value={formData.dateEnd}
                                     onChange={handleChange}
                                 />
+                                <button type="button" onClick={() => handleDate('dateEnd')}>END</button>
                             </div>
                             <div className='form-field'>
                                 <label>Description:</label>
@@ -154,7 +195,6 @@ const EditTaskForm = ({task, onCloseModals, onSave}) => {
                         </div>
                     </div>
                     <footer className='form-footer'>
-                        {successMessage && <p className="error-message">{successMessage}</p>}
                         {errorMessage && <p className="error-message">{errorMessage}</p>}
                         <button className="button" type="submit">Update Task</button>
                     </footer>

@@ -8,10 +8,17 @@ import { useSelector } from 'react-redux';
 import iconClose from '../../../assets/img/icon-close.svg';
 
 const DeleteTaskForm = ({task, onCloseModals, onSave}) => {
+    const { users: reduxUsers, token } = useSelector((state) => state.user);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const { token } = useSelector((state) => state.user);;
+    // const { token } = useSelector((state) => state.user);
     const taskId = task._id;
+
+    // Get Updated name from reduxUsers
+    const getClientName = (clientId) => {
+        const client = reduxUsers.find((user) => user._id === clientId);
+        return client ? client.name : 'Unknown Client';
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,7 +31,6 @@ const DeleteTaskForm = ({task, onCloseModals, onSave}) => {
             if (response && response.message) {
                 const taskId = response.result;
                 setSuccessMessage(response.message);
-                console.log("response message delete", response.message);
                 onSave(taskId);
             }
             // TODO: I don't know why, but this refresh the tasksList
@@ -57,7 +63,8 @@ const DeleteTaskForm = ({task, onCloseModals, onSave}) => {
                         </div>
                         <div className='form-field'>
                             <label>Task client name:</label>
-                            <input type="text" value={task.client.name} readOnly={true} />
+                            <input type="text" value={getClientName(task.client._id)} readOnly={true} />
+                            {/* <input type="text" value={task.client.name} readOnly={true} /> */}
                         </div>
                         <div className='form-field'>
                             <label>Task date:</label>

@@ -18,20 +18,26 @@ function Notifications({type, onCloseNotification}) {
     });
     // Define a message based on the type
     const notificationMessage
-        = type === 'signin'
+        = type === 'user-signin'
         ? "User SIGNIN successfully"
-        : type === 'edit'
+        : type === 'user-edit'
         ? "User EDITED successfully"
-        : type === 'delete'
+        : type === 'user-delete'
         ? "User DELETED successfully"
-        : type === 'create'
+        : type === 'user-create'
         ? "User CREATED successfully"
+        : type === 'task-edit'
+        ? "Task EDITED successfully"
+        : type === 'task-delete'
+        ? "Task DELETED successfully"
+        : type === 'task-create'
+        ? "Task CREATED successfully"
         : "Notification";
 
     return (
         <div className='notifications' role="alert" aria-live="polite">
             <header className='notification-header'>
-                <p>Hey!</p>
+                <p className='bold'>Hey!</p>
                 <button onClick={onCloseNotification} className="notification-close">
                     <img className='icon' src={iconClose} alt='delete icon' width='20px' height='20px'/>
                 </button>

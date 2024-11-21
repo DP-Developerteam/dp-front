@@ -23,15 +23,14 @@ function DeleteUserForm({ user, onCloseModals, onSave }) {
             const response = await deleteUser(userId, token);
             // Check response
             if (response && response.message) {
-                const userId = response.result;
+                const deletedUser = response.result;
                 setSuccessMessage(response.message);
-                console.log("response message delete", response.message);
-                onSave(userId);
+                onSave(deletedUser);
             }
-            // TODO: I don't know why, but this refresh the UsersList
-            if (response) {
-                onSave(userId);
-            }
+            // // TODO: I don't know why, but this refresh the UsersList
+            // if (response) {
+            //     onSave(userId);
+            // }
         } catch (error) {
             const message = error.response?.data?.message || 'An error occurred during sign up.';
             setErrorMessage(message);

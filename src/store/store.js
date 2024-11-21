@@ -4,12 +4,15 @@ import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 // Importing the default storage engine from redux-persist, which uses localStorage for web applications
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+// Importing createFilter to filter persisted data
+import { createFilter } from 'redux-persist-transform-filter';
 // Importing the rootReducer which combines all the individual reducers for the Redux store
 import rootReducer from './reducers';
 // Importing thunk
 import { thunk } from 'redux-thunk';
 
-
+// Create a filter to exclude the 'users' field from persistence in the user reducer
+const userFilter = createFilter('user', ['token', 'userId', 'role', 'isLoggedIn', 'expiresIn']);
 
 // Configuration object for redux-persist
 const persistConfig = {
@@ -17,6 +20,8 @@ const persistConfig = {
     key: 'root',
     // Specifying the storage engine to use for persistence
     storage,
+    // Add info from user reducer except users
+    transforms: [userFilter],
 };
 
 // Creating a persisted reducer using the rootReducer and the persistConfig

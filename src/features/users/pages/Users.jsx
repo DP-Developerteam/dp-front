@@ -2,9 +2,9 @@
 // import '../../../App.scss'; -> it's imported in users.scss
 import '../users.scss';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-// Import the function to fetch users
-import { getUsers } from '../userService';
+// Import redux and slices
+import { useSelector, useDispatch } from 'react-redux';
+import { getUsersThunk, addUser, updateUser, deleteUser } from '../userSlice';
 // Import components
 import FilterUserBar from '../components/FilterUserBar';
 import DeleteUserForm from '../components/DeleteUserForm';
@@ -17,14 +17,12 @@ import iconEdit from '../../../assets/img/icon-edit.svg';
 import iconAdd from '../../../assets/img/icon-add.svg';
 
 const Users = () => {
+    // REDUX
+    const dispatch = useDispatch();
+    const { users: reduxUsers, token, loading, errorMessage } = useSelector((state) => state.user);
     // Array to store and filter user data
-    const [users, setUsers] = useState([]);
-    const [allUsers, setAllUsers] = useState([]);
-    // State for loading and error handling
-    const [loading, setLoading] = useState(true);
-    const [errorMessage, setErrorMessage] = useState('');
-    // Access user token from Redux
-    const { token } = useSelector((state) => state.user);
+    const [usersList, setUsersList] = useState([]);
+    const [usersFilterList, setUsersFilterList] = useState([]);
     // States for modals and selected user
     const [deleteModal, setDeleteModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
@@ -34,45 +32,31 @@ const Users = () => {
     const [notificationModal, setNotificationModal] = useState(false);
     const [notificationType, setNotificationType] = useState('');
 
-
-    // useEffect hook to fetch users when the component mounts
+    // Fetch users when the component mounts
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                // Call the getUsers function to retrieve user data
-                const usersData = await getUsers(token);
-                // Update the users state with the fetched data
-                setUsers(usersData);
-                setAllUsers(usersData);
-            } catch (error) {
-                // Set the error state with a relevant message, falling back to a default
-                setErrorMessage(error.response?.data.message || "Failed to load users.");
-            } finally {
-                // Set loading to false after the fetch attempt (successful or failed)
-                setLoading(false);
-            }
-        };
-        // Invoke the fetchUsers function to initiate data fetching
-        fetchUsers();
-    }, [token]);
+        dispatch(getUsersThunk(token));
+    }, [dispatch, token]);
+    // Update local users when Redux users change
+    useEffect(() => {
+        setUsersList(reduxUsers || []);
+        setUsersFilterList(reduxUsers || []);
+    }, [reduxUsers]);
 
+    // Handle modal/notifications states
     // DELETE. Selected user and show delete modal
     const selectUserDelete = (user) => {
         setSelectedUser(user);
         setDeleteModal(true);
     };
-
     // EDIT. Set the selected user and show edit modal
     const selectUserEdit = (user) => {
         setSelectedUser(user);
         setEditModal(true);
     };
-
     // CREATE. Show create modal
     const createUser = () => {
         setCreateModal(true);
     };
-
     // NOTIFICATION. Show create modal
     const notification = (type) => {
         setNotificationType(type);
@@ -82,7 +66,6 @@ const Users = () => {
     const closeNotification = () => {
         setNotificationModal(false);
     }
-
     // Close  all modals
     const closeModals = () => {
         // Set all states to false. Add here all modals/states created in the file
@@ -108,11 +91,11 @@ const Users = () => {
                 </button>
             </div>
             <div className='filter-bar-container'>
-                <FilterUserBar allUsers={allUsers} setUsers={setUsers} />
+                <FilterUserBar setUsersFilterList={setUsersFilterList} usersList={usersList} />
             </div>
-            {users.length > 0 ? (
+            {usersFilterList.length > 0 ? (
                 <ul className='items-container'>
-                    {users.map((user) => (
+                    {usersFilterList.map((user) => (
                         <li key={user._id} className='item'>
                             <div className='text-container'>
                                 <p className='paragraph bold'>{user.name}</p>
@@ -143,9 +126,10 @@ const Users = () => {
                 <SignUpForm
                     onCloseModals={closeModals}
                     onSave={(createdUser) => {
-                        setAllUsers((prevUsers) => [...prevUsers, createdUser]);
+                        setUsersList((prevUsers) => [...prevUsers, createdUser]);
                         closeModals();
-                        notification('create');
+                        notification('user-create');
+                        dispatch(addUser(createdUser));
                     }}
                 />
             )}
@@ -153,10 +137,11 @@ const Users = () => {
                 <DeleteUserForm
                     user={selectedUser}
                     onCloseModals={closeModals}
-                    onSave={(userId) => {
-                        setAllUsers((prevUsers) => prevUsers.filter(user => user._id !== userId));
+                    onSave={(deletedUser) => {
+                        setUsersList((prevUsers) => prevUsers.filter(user => user._id !== deletedUser._id));
                         closeModals();
-                        notification('delete');
+                        notification('user-delete');
+                        dispatch(deleteUser(deletedUser));
                     }}
                     />
                 )}
@@ -165,9 +150,10 @@ const Users = () => {
                 user={selectedUser}
                 onCloseModals={closeModals}
                 onSave={(updatedUser) => {
-                        setAllUsers(prevUsers => prevUsers.map(user => user._id === updatedUser._id ? updatedUser : user));
+                        setUsersList(prevUsers => prevUsers.map(user => user._id === updatedUser._id ? updatedUser : user));
                         closeModals();
-                        notification('edit');
+                        notification('user-edit');
+                        dispatch(updateUser(updatedUser));
                     }}
                 />
             )}

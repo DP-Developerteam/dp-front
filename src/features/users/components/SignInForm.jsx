@@ -2,11 +2,12 @@
 // import '../../../App.scss';
 import '../users.scss';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 // Importt REDUX
 import { useDispatch } from 'react-redux';
 import { clearUser, signInThunk } from '../userSlice';
-
+// Import assets
+import iconClose from '../../../assets/img/icon-close.svg';
 
 
 
@@ -37,8 +38,9 @@ const SignInForm = ({ onSignInSuccess }) => {
 
             // Variables to manage the SignIn
             const userToken = action.token;
-            // const userRole = action.role;
-            const expiresIn = action.expiresIn * 1000;
+            const userRole = action.role;
+            const expiresIn = action.expiresIn;
+            console.log("expiresIn signinform: ", expiresIn)
             // const alertExpires = expiresIn - 20; // alert pop ups when there are 20 seconds for the auto signOut
 
             if (userToken) {
@@ -46,14 +48,14 @@ const SignInForm = ({ onSignInSuccess }) => {
                 onSignInSuccess();
 
                 //Conditional to redirect based on role after login
-                // navigate(userRole === 'admin' ? '/crm' : '/');
-                // navigate('/users');
+                navigate(userRole === 'admin' ? '/crm' : '/');
+                // navigate('/');
 
                 setTimeout(() => {
-                    // Redirect to homepage
-                    navigate('/');
                     // Clear user when token expires
                     dispatch(clearUser());
+                    // Redirect to homepage
+                    navigate('/');
                 }, expiresIn); // Call this after the expiration time
 
             }
@@ -64,11 +66,13 @@ const SignInForm = ({ onSignInSuccess }) => {
     };
 
     return (
-        <div className='page'>
+        <div className='modal-overlay'>
             <form onSubmit={handleSubmit} className='form-container'>
                 <header className='form-header'>
                     <h2>Signin</h2>
-                    <a href="/">Cancel</a>
+                    <Link className='button' to='/'>
+                        <img className='icon' src={iconClose} alt='delete icon' width='20px' height='20px'/>
+                    </Link>
                 </header>
                 <div className='form-body'>
                     <div className='form-group'>

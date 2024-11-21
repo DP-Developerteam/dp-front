@@ -1,21 +1,20 @@
-//Import styles and libs
+// Styles and libs
 import './App.scss';
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom';
 import RootLayout from './layout/RootLayout.jsx';
-//Redux
+// Redux
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './store/store.js';
-//Pages
+// Pages
 import AboutDiego from './pages/AboutDiego.jsx';
 import AreaCRM from './pages/AreaCRM.jsx';
 import GraphicDesign from './pages/GraphicDesign.jsx';
 import Homepage from './pages/Homepage.jsx';
 import Portfolio from './pages/Portfolio.jsx';
 import WebDevelopment from './pages/WebDevelopment.jsx';
-// User & Tasks Pages
-import Users from './features/users/pages/Users.jsx';
-import Tasks from './features/tasks/pages/Tasks.jsx';
+
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,8 +26,6 @@ const router = createBrowserRouter(
         <Route path="home" element={<Homepage />}/>
         <Route path="portfolio" element={<Portfolio />}/>
         <Route path="webdevelopment" element={<WebDevelopment />}/>
-        <Route path="users" element={<Users />} />
-        <Route path="tasks" element={<Tasks />} />
     </Route>
   ),
   {

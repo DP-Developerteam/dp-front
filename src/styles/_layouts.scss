@@ -277,6 +277,9 @@
             }
         }
     }
+    @media (min-width: 766px) and (max-width: 900px) {
+        gap: 10px;
+    }
     @media (min-width: 766px) {
         flex-flow: row nowrap;
         .crud-page {

@@ -10,6 +10,7 @@ import iconClose from '../../../assets/img/icon-close.svg';
 
 
 const SignUpForm = ({onCloseModals, onSave}) => {
+    // State formData
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -18,8 +19,8 @@ const SignUpForm = ({onCloseModals, onSave}) => {
         role: 'client'
     });
     const [successMessage, setSuccessMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const { token } = useSelector((state) => state.user);
+    // const [errorMessage, setErrorMessage] = useState('');
+    const { token, errorMessage } = useSelector((state) => state.user);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -28,8 +29,7 @@ const SignUpForm = ({onCloseModals, onSave}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setErrorMessage('');
-
+        // setErrorMessage('');
         try {
             // Directly calling signupUser
             const response = await signupUser(formData, token);
@@ -41,18 +41,18 @@ const SignUpForm = ({onCloseModals, onSave}) => {
             }
         } catch (error) {
             console.error('Signup error:', error); // Log the full error for debugging
-            const message = error.response?.data?.message || 'An error occurred during sign up.';
-            setErrorMessage(message);
+            // const message = error.response?.data?.message || 'An error occurred during sign up.';
+            // setErrorMessage(message);
         }
     };
 
 
     return (
-        <div className="modal-overlay">
-            <form className="form-container" onSubmit={handleSubmit}>
-                <header className="form-header">
+        <div className='modal-overlay'>
+            <form className='form-container' onSubmit={handleSubmit}>
+                <header className='form-header'>
                     <h2>Register user</h2>
-                    <button className="button" type="button" onClick={onCloseModals}>
+                    <button className='button' type='button' onClick={onCloseModals}>
                         <img className='icon' src={iconClose} alt='delete icon' width='20px' height='20px'/>
                     </button>
                 </header>
@@ -61,8 +61,8 @@ const SignUpForm = ({onCloseModals, onSave}) => {
                         <div className='form-field'>
                             <label>Name:</label>
                             <input
-                                type="text"
-                                name="name"
+                                type='text'
+                                name='name'
                                 value={formData.name}
                                 onChange={handleChange}
                                 required
@@ -71,8 +71,8 @@ const SignUpForm = ({onCloseModals, onSave}) => {
                         <div className='form-field'>
                             <label>Email:</label>
                             <input
-                                type="text"
-                                name="email"
+                                type='text'
+                                name='email'
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
@@ -81,8 +81,8 @@ const SignUpForm = ({onCloseModals, onSave}) => {
                         <div className='form-field'>
                             <label>Password:</label>
                             <input
-                                type="password"
-                                name="password"
+                                type='password'
+                                name='password'
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
@@ -91,8 +91,8 @@ const SignUpForm = ({onCloseModals, onSave}) => {
                         <div className='form-field'>
                             <label>Company:</label>
                             <input
-                                type="text"
-                                name="company"
+                                type='text'
+                                name='company'
                                 value={formData.company}
                                 onChange={handleChange}
                                 required
@@ -101,20 +101,20 @@ const SignUpForm = ({onCloseModals, onSave}) => {
                         <div className='form-field'>
                             <label>Role:</label>
                             <select
-                                name="role"
+                                name='role'
                                 value={formData.role}
                                 onChange={handleChange}
                             >
-                                <option value="client">Client</option>
-                                <option value="admin">Admin</option>
+                                <option value='client'>Client</option>
+                                <option value='admin'>Admin</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 <footer className='form-footer'>
-                    {successMessage && <p className="error-message">{successMessage}</p>}
-                    {errorMessage && <p className="error-message">{errorMessage}</p>}
-                    <button className="button" type="submit">Sign Up</button>
+                    {successMessage && <p className='error-message'>{successMessage}</p>}
+                    {errorMessage && <p className='error-message'>{errorMessage}</p>}
+                    <button className='button' type='submit'>Sign Up</button>
                 </footer>
             </form>
         </div>

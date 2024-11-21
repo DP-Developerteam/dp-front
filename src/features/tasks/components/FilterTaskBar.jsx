@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 // Import assets
 import iconSearch from '../../../assets/img/icon-search.svg';
 
-function FilterTaskBar({ setTasks, allTasks }) {
+function FilterTaskBar({ setTasksFilterList, tasksList }) {
     const [searchTerm, setSearchTerm] = useState(''); // State for the search input
     const [sortOrder, setSortOrder] = useState('desc'); // 'asc' for ascending, 'desc' for descending
 
@@ -18,8 +18,8 @@ function FilterTaskBar({ setTasks, allTasks }) {
 
     // Define the function to filter and sort Tasks, memoized with useCallback to avoid unnecessary re-creation
     const filterAndSortTasks = useCallback(() => {
-        // Make a shallow copy of allTasks array to avoid directly mutating the original
-        let filteredTasks = [...allTasks];
+        // Make a shallow copy of tasksList array to avoid directly mutating the original
+        let filteredTasks = [...tasksList];
 
         // If there's a search term, filter tasks whose client name or company includes the term (case insensitive)
         if (searchTerm) {
@@ -37,8 +37,8 @@ function FilterTaskBar({ setTasks, allTasks }) {
         });
 
         // Update the tasks state with the filtered and sorted array
-        setTasks(filteredTasks);
-    }, [searchTerm, sortOrder, allTasks, setTasks]); // Memoize the function based on dependencies
+        setTasksFilterList(filteredTasks);
+    }, [searchTerm, sortOrder, setTasksFilterList, tasksList]); // Memoize the function based on dependencies
 
     // useEffect hook to invoke filterAndSortTasks whenever the function or its dependencies change
     useEffect(() => {
@@ -57,18 +57,18 @@ function FilterTaskBar({ setTasks, allTasks }) {
                         type="text"
                         placeholder="name or company"
                         value={searchTerm}
-                        onChange={handleSearchChange} // Call this function when search term changes
+                        onChange={handleSearchChange}
                     />
                 </div>
             </div>
             <div className='form-group'>
                 <div className='form-field'>
                     <select
-                        name="role"
+                        name="month"
                         // value={formData.role}
                         // onChange={handleChange}
                     >
-                        <option selected value="null">Month</option>
+                        <option value="null">Month</option>
                         <option value="01">01</option>
                         <option value="02">02</option>
                         <option value="03">03</option>
@@ -85,11 +85,11 @@ function FilterTaskBar({ setTasks, allTasks }) {
                 </div>
                 <div className='form-field'>
                     <select
-                        name="role"
+                        name="year"
                         // value={formData.role}
                         // onChange={handleChange}
                     >
-                        <option selected value="null">Year</option>
+                        <option value="null">Year</option>
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
