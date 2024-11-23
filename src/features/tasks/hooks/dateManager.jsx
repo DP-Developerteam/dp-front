@@ -30,6 +30,11 @@ export function useHandleDate(task) {
 
     return { handleDate };
 }
+// Function to format month and year. Used in Tasks
+export const formatYearMonth = (dateString) => {
+    const [year, month] = dateString.split(' ')[0].split('-'); // Split dateStart into year and month
+    return `${year}.${month}`; // Return in the desired format: MM.YYYY
+};
 
 // Function to calculate time of a task
 export const calcTime = (dateStart, dateEnd) => {
@@ -44,7 +49,7 @@ export const calcTime = (dateStart, dateEnd) => {
     // Format with leading zeros
     const hours = convertedHours.toString().padStart(2, '0');
     const minutes = convertedMinutes.toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    return `${hours} h - ${minutes} m`;
 }
 
 export const TimerNotification = ({ task, onSave }) => {

@@ -13,7 +13,7 @@ function FilterUserBar({ setUsersFilterList, usersList }) {
     };
 
     // Toggle sort order
-    const toggleSortOrder = () => {
+    const handleSortOrder = () => {
         setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
     };
 
@@ -61,7 +61,7 @@ function FilterUserBar({ setUsersFilterList, usersList }) {
                     />
                 </div>
                 <div className='form-field toggle'>
-                    <button className='toggle' onClick={toggleSortOrder} >
+                    <button className='toggle' onClick={handleSortOrder} >
                         {sortOrder === 'asc' ? 'A-Z' : 'Z-A'}
                     </button>
                 </div>

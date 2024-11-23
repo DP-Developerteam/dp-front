@@ -19,7 +19,7 @@ import iconAdd from '../../../assets/img/icon-add.svg';
 const Users = () => {
     // REDUX
     const dispatch = useDispatch();
-    const { users: reduxUsers, token, loading, errorMessage } = useSelector((state) => state.user);
+    const { users: reduxUsers, token, errorMessage } = useSelector((state) => state.user);
     // Array to store and filter user data
     const [usersList, setUsersList] = useState([]);
     const [usersFilterList, setUsersFilterList] = useState([]);
@@ -75,9 +75,6 @@ const Users = () => {
         setSelectedUser(null);
     };
 
-    // Conditional rendering based on loading and error states
-    // Show loading message while data is being fetched
-    if (loading) return <div>Loading...</div>;
     // Display error message if fetching failed
     if (errorMessage) return <div>{errorMessage}</div>;
 
@@ -93,27 +90,34 @@ const Users = () => {
             <div className='filter-bar-container'>
                 <FilterUserBar setUsersFilterList={setUsersFilterList} usersList={usersList} />
             </div>
-            {usersFilterList.length > 0 ? (
-                <ul className='items-container'>
-                    {usersFilterList.map((user) => (
-                        <li key={user._id} className='item'>
-                            <div className='text-container'>
-                                <p className='paragraph bold'>{user.name}</p>
-                                <p className='paragraph'>{user.company}</p>
-                            </div>
-                            <div className='buttons-container'>
-                                <button className='icon' onClick={() => selectUserDelete(user)}>
-                                    <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px'/>
-                                </button>
-                                <button className='icon' onClick={() => selectUserEdit(user)}>
-                                    <img className='icon' src={iconEdit} alt='edit icon' width='20px' height='20px'/>
-                                </button>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+            {!reduxUsers || !reduxUsers ? (
+                <div>Loading data...</div>
             ) : (
-                <p>No users found.</p>
+                <>
+                    {/* No Tasks Found */}
+                    {usersFilterList.length === 0 ? (
+                        <p>No tasks found.</p>
+                    ) : (
+                        <ul className='items-container'>
+                            {usersFilterList.map((user) => (
+                                <li key={`user-${user._id}`} className='item'>
+                                    <div className='text-container'>
+                                        <p className='paragraph bold'>{user.name}</p>
+                                        <p className='paragraph'>{user.company}</p>
+                                    </div>
+                                    <div className='buttons-container'>
+                                        <button className='icon' onClick={() => selectUserDelete(user)}>
+                                            <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px'/>
+                                        </button>
+                                        <button className='icon' onClick={() => selectUserEdit(user)}>
+                                            <img className='icon' src={iconEdit} alt='edit icon' width='20px' height='20px'/>
+                                        </button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </>
             )}
 
             {notificationModal && (

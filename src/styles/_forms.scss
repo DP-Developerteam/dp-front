@@ -25,7 +25,8 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     height: auto;
-    max-height: 95dvh;
+    max-height: fit-content;
+    max-height: 95%;
     background-color: $color-light;
     padding: 15px 10px;
     border-radius: 15px;
@@ -106,7 +107,6 @@
         @include hoverPointer();
     }
     @media (min-width: 810px) {
-        max-height: fit-content;
         gap: 20px;
         padding: 30px 30px;
         border-radius: 35px;
@@ -140,7 +140,6 @@
 .filter-bar-container {
     @include displayFlex(row nowrap, space-between, flex-end);
     width: 100%;
-    // max-width: 500px;
     .filter-bar {
         @include displayFlex(column nowrap, flex-start, flex-start);
         gap: 10px;

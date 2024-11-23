@@ -5,6 +5,8 @@ import iconSearch from '../../../assets/img/icon-search.svg';
 function FilterTaskBar({ setTasksFilterList, tasksList }) {
     const [searchTerm, setSearchTerm] = useState(''); // State for the search input
     const [sortOrder, setSortOrder] = useState('desc'); // 'asc' for ascending, 'desc' for descending
+    const [month, setMonth] = useState(''); // Selected month
+    const [year, setYear] = useState(''); // Selected year
 
     // Handle search term change
     const handleSearchChange = (e) => {
@@ -12,9 +14,20 @@ function FilterTaskBar({ setTasksFilterList, tasksList }) {
     };
 
     // Toggle sort order
-    const toggleSortOrder = () => {
+    const handleSortOrder = () => {
         setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
     };
+
+    // Handle month change
+    const handleMonthChange = (e) => {
+        setMonth(e.target.value); // Update the selected month
+    };
+
+    // Handle year change
+    const handleYearChange = (e) => {
+        setYear(e.target.value); // Update the selected year
+    };
+
 
     // Define the function to filter and sort Tasks, memoized with useCallback to avoid unnecessary re-creation
     const filterAndSortTasks = useCallback(() => {
@@ -29,6 +42,14 @@ function FilterTaskBar({ setTasksFilterList, tasksList }) {
             );
         }
 
+        // Filter by month and year
+        filteredTasks = filteredTasks.filter((task) => {
+            const [taskYear, taskMonth] = task.dateStart.split(' ')[0].split('-'); // Extract year and month
+            const matchesMonth = month ? taskMonth === month : true;
+            const matchesYear = year ? taskYear === year : true;
+            return matchesMonth && matchesYear;
+        });
+
         // Sort the filtered tasks chronological by date based on the sortOrder ('asc' or 'desc')
         filteredTasks.sort((a, b) => {
             return sortOrder === 'asc'
@@ -38,7 +59,7 @@ function FilterTaskBar({ setTasksFilterList, tasksList }) {
 
         // Update the tasks state with the filtered and sorted array
         setTasksFilterList(filteredTasks);
-    }, [searchTerm, sortOrder, setTasksFilterList, tasksList]); // Memoize the function based on dependencies
+    }, [searchTerm, month, year, sortOrder, setTasksFilterList, tasksList]); // Memoize the function based on dependencies
 
     // useEffect hook to invoke filterAndSortTasks whenever the function or its dependencies change
     useEffect(() => {
@@ -65,10 +86,10 @@ function FilterTaskBar({ setTasksFilterList, tasksList }) {
                 <div className='form-field'>
                     <select
                         name="month"
-                        // value={formData.role}
-                        // onChange={handleChange}
+                        value={month}
+                        onChange={handleMonthChange}
                     >
-                        <option value="null">Month</option>
+                        <option value="">Month</option>
                         <option value="01">01</option>
                         <option value="02">02</option>
                         <option value="03">03</option>
@@ -86,17 +107,17 @@ function FilterTaskBar({ setTasksFilterList, tasksList }) {
                 <div className='form-field'>
                     <select
                         name="year"
-                        // value={formData.role}
-                        // onChange={handleChange}
+                        value={year}
+                        onChange={handleYearChange}
                     >
-                        <option value="null">Year</option>
+                        <option value="">Year</option>
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
                     </select>
                 </div>
                 <div className='form-field toggle'>
-                    <button className='toggle' onClick={toggleSortOrder} >
+                    <button className='toggle' onClick={handleSortOrder} >
                         {sortOrder === 'asc' ? 'A-Z' : 'Z-A'}
                     </button>
                 </div>

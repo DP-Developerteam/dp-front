@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTasksThunk } from '../taskSlice';
 // Import custom hooks
-import { calcTime, TimerNotification } from '../hooks/dateManager';
+import { formatYearMonth, calcTime, TimerNotification } from '../hooks/dateManager';
 // Import components
 import CreateTaskForm from '../components/CreateTaskForm';
 import DeleteTaskForm from '../components/DeleteTaskForm';
@@ -21,7 +21,7 @@ import iconAdd from '../../../assets/img/icon-add.svg';
 function Tasks() {
     // REDUX
     const dispatch = useDispatch();
-    const { tasks: reduxTasks, loading, errorMessage } = useSelector((state) => state.task);
+    const { tasks: reduxTasks, errorMessage } = useSelector((state) => state.task);
     const { users: reduxUsers, token } = useSelector((state) => state.user);
     // Array to store and filter tasks data
     const [tasksList, setTasksList] = useState([]);
@@ -68,6 +68,12 @@ function Tasks() {
         return calcTime(taskStart, taskEnd);
     };
 
+    // Calculate Task Duration with hook dateManager
+    const callFormatYearMonth = (taskStart) => {
+        // Call function in custom hook dateManager
+        return formatYearMonth(taskStart);
+    };
+
     // DELETE. Selected task and show delete modal
     const selectTaskDelete = (task) => {
         setSelectedTask(task);
@@ -108,14 +114,8 @@ function Tasks() {
         setSelectedTask(null);
     };
 
-    // Conditional rendering based on loading and error states
-    // Show loading message while data is being fetched
-    if (loading) return <div>Loading...</div>;
     // Display error message if fetching failed
     if (errorMessage) return <div>{errorMessage}</div>;
-
-    if (!reduxUsers || !reduxTasks) return <div>Loading data...</div>;
-    if (tasksFilterList.length === 0) return <p>No tasks found.</p>;
 
     return (
         <div className='tasks-page crud-page'>
@@ -128,25 +128,36 @@ function Tasks() {
             <div className='filter-bar-container'>
                 <FilterTaskBar setTasksFilterList={setTasksFilterList} tasksList={tasksList} />
             </div>
-            <ul className='items-container'>
-                {tasksFilterList.map((task) => (
-                    <li key={task._id} className='item'>
-                        <div className='text-container'>
-                            <p className='paragraph bold'>{getClient(task.client._id, 'client')}</p>
-                            <p className='paragraph description'>Duration: {calculateTaskDuration(task.dateStart, task.dateEnd)}</p>
-                            <p className='paragraph description'>{task.description}</p>
-                        </div>
-                        <div className='buttons-container'>
-                            <button className='icon' onClick={() => selectTaskDelete(task)}>
-                                <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px'/>
-                            </button>
-                            <button className='icon' onClick={() => selectTaskEdit(task)}>
-                                <img className='icon' src={iconEdit} alt='edit icon' width='20px' height='20px'/>
-                            </button>
-                        </div>
-                    </li>
-                ))}
-            </ul>
+            {!reduxUsers || !reduxTasks ? (
+                <div>Loading data...</div>
+            ) : (
+                <>
+                    {/* No Tasks Found */}
+                    {tasksFilterList.length === 0 ? (
+                        <p>No tasks found.</p>
+                    ) : (
+                        <ul className='items-container'>
+                            {tasksFilterList.map((task) => (
+                                <li key={`task-${task._id}`} className='item'>
+                                    <div className='text-container'>
+                                        <p className='paragraph bold'>{getClient(task.client._id, 'client')}</p>
+                                        <p className='paragraph description'>{callFormatYearMonth(task.dateStart)} - Duration: {calculateTaskDuration(task.dateStart, task.dateEnd)}</p>
+                                        <p className='paragraph description'>{task.description}</p>
+                                    </div>
+                                    <div className='buttons-container'>
+                                        <button className='icon' onClick={() => selectTaskDelete(task)}>
+                                            <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px' />
+                                        </button>
+                                        <button className='icon' onClick={() => selectTaskEdit(task)}>
+                                            <img className='icon' src={iconEdit} alt='edit icon' width='20px' height='20px' />
+                                        </button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </>
+            )}
 
             {notificationModal && (
                 <Notifications
