@@ -5,14 +5,16 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 //Import functions
 import { createTask } from '../taskService';
-// Import components
-import { useHandleDate } from './useHandleDate';
+// Import custom hooks
+import { useHandleDate } from '../hooks/dateManager';
 // Import assets
 import iconClose from '../../../assets/img/icon-close.svg';
 
 const CreateTaskForm = ({onCloseModals, onSave}) => {
     // REDUX
-        const { users: reduxUsers, token } = useSelector((state) => state.user);
+    const { users: reduxUsers, token } = useSelector((state) => state.user);
+    // State for loading and error handling
+    const [errorMessage, setErrorMessage] = useState('');
     // State formData
     const [formData, setFormData] = useState({
         client: {},
@@ -24,7 +26,7 @@ const CreateTaskForm = ({onCloseModals, onSave}) => {
     const [selectedClient, setSelectedClient] = useState('');
     // HandleDate custom hook
     const { handleDate } = useHandleDate(setFormData);
-
+    // Handle form input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         // Update selectedClient separately for the dropdown
@@ -37,10 +39,10 @@ const CreateTaskForm = ({onCloseModals, onSave}) => {
             [name]: value,
         }));
     };
-
+    // Handle submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // setErrorMessage('');
+        setErrorMessage('');
         try {
             // Directly calling signupUser
             const response = await createTask(formData, token);
@@ -56,11 +58,11 @@ const CreateTaskForm = ({onCloseModals, onSave}) => {
                         company: clientName.company,
                     };
                 }
-                // setSuccessMessage(response.message);
                 onSave(createdTask);
             }
         } catch (error) {
             console.error('Signup error:', error);
+            setErrorMessage(error || 'Failed to update task.');
         }
     };
 
@@ -81,6 +83,7 @@ const CreateTaskForm = ({onCloseModals, onSave}) => {
                                 name='client'
                                 value={selectedClient}
                                 onChange={handleChange}
+                                required
                             >
                                 <option value="" disabled>Select a client</option>
                                 {reduxUsers.map((client) => (
@@ -100,16 +103,6 @@ const CreateTaskForm = ({onCloseModals, onSave}) => {
                             <button type="button" onClick={() => handleDate('dateStart')}>START</button>
                         </div>
                         <div className='form-field'>
-                            <label>Date end:</label>
-                            <input
-                                type='text'
-                                name='dateEnd'
-                                value={formData.dateEnd}
-                                onChange={handleChange}
-                            />
-                            <button type="button" onClick={() => handleDate('dateEnd')}>END</button>
-                        </div>
-                        <div className='form-field'>
                             <label>Description:</label>
                             <input
                                 type='text'
@@ -121,6 +114,7 @@ const CreateTaskForm = ({onCloseModals, onSave}) => {
                     </div>
                 </div>
                 <footer className='form-footer'>
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
                     <button className='button' type='submit'>Create task</button>
                 </footer>
             </form>

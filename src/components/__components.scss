@@ -105,8 +105,14 @@
     .notification-header {
         @include displayFlex(row nowrap, space-between, center);
         width: 100%;
+        gap: 30px;
     }
     .notification-body {
         @include displayFlex(column nowrap, flex-start, flex-start);
     }
+}
+.notification-left {
+    top: 20px;
+    left: 20px;
+    right: auto;
 }

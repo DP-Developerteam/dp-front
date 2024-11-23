@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { editTaskThunk } from '../taskSlice';
 // Import components
-import { useHandleDate } from './useHandleDate';
+import { useHandleDate } from '../hooks/dateManager';
 // Import assets
 import iconClose from '../../../assets/img/icon-close.svg';
 
@@ -13,6 +13,8 @@ const EditTaskForm = ({task, onCloseModals, onSave}) => {
     // REDUX
     const dispatch = useDispatch();
     const { users: reduxUsers } = useSelector((state) => state.user);
+    // State for loading and error handling
+    const [errorMessage, setErrorMessage] = useState('');
 
     // States for handling tasks
     const taskId = task._id;
@@ -29,25 +31,7 @@ const EditTaskForm = ({task, onCloseModals, onSave}) => {
         description: task.description || '',
         _id: task._id,
     });
-
-    // Get Updated name from reduxUsers
-    const getClientName = (clientId) => {
-        const client = reduxUsers.find((user) => user._id === clientId);
-        return client ? client.name : 'Unknown Client';
-    };
-    // Get Updated company from reduxUsers
-    const getClientCompany = (clientId) => {
-        const client = reduxUsers.find((user) => user._id === clientId);
-        return client ? client.company : 'Unknown Client';
-    };
-
-    // HandleDate custom hook
-    const { handleDate } = useHandleDate(setFormData);
-
-    // State for loading and error handling
-    const [errorMessage, setErrorMessage] = useState('');
-
-    // Set formData with task data
+    // Sync formData with task data
     useEffect(() => {
         setFormData({
             client: {
@@ -61,6 +45,21 @@ const EditTaskForm = ({task, onCloseModals, onSave}) => {
             _id: task._id,
         });
     }, [task]);
+
+    // Get Updated name or company from reduxUsers
+    const getClient = (clientId, key) => {
+        const client = reduxUsers.find((user) => user._id === clientId);
+        return key === 'name' && client
+            ? client.name
+            :key === 'company' && client
+            ? client.company
+            :key === 'client' && client
+            ? `${client.name} - ${client.company}`
+            : 'Unknown Client'
+    };
+
+    // HandleDate custom hook from dateManager
+    const { handleDate } = (useHandleDate(setFormData));
 
     // Handle form input changes
     const handleChange = (e) => {
@@ -88,7 +87,7 @@ const EditTaskForm = ({task, onCloseModals, onSave}) => {
         }
     };
 
-    // Handle submit
+    // Handle submit #### TODO: create a Thunk to edit tasks, so I can reuse it in dateManager
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
@@ -145,7 +144,7 @@ const EditTaskForm = ({task, onCloseModals, onSave}) => {
                                     value={ formData.client._id || '' }
                                     onChange={handleChange}
                                 >
-                                    <option value={ formData.client._id || '' }>{getClientName(formData.client._id)}</option>
+                                    <option value={ formData.client._id || '' }>{getClient(formData.client._id, 'name')}</option>
                                     {reduxUsers.map((client) => (
                                         <option key={client._id} value={client._id}>
                                             {client.name}
@@ -159,7 +158,7 @@ const EditTaskForm = ({task, onCloseModals, onSave}) => {
                                     disabled
                                     type="text"
                                     name="company"
-                                    value={getClientCompany(formData.client._id)}
+                                    value={getClient(formData.client._id, 'company')}
                                     onChange={handleChange}
                                 />
                             </div>

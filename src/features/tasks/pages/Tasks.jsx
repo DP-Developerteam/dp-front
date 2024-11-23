@@ -1,15 +1,14 @@
 // Import styles and libraries
 // import '../../../App.scss'; -> it's imported in tasks.scss
-import '../tasks.scss';
+import '../__tasks.scss';
 import React, { useEffect, useState } from 'react';
-// // Import the function to fetch tasks
-// import { getTasks } from '../taskService';
 // Import redux and slices
 import { useSelector, useDispatch } from 'react-redux';
 import { getTasksThunk } from '../taskSlice';
+// Import custom hooks
+import { calcTime, TimerNotification } from '../hooks/dateManager';
 // Import components
 import CreateTaskForm from '../components/CreateTaskForm';
-// import DateManager from '../components/DateManager';
 import DeleteTaskForm from '../components/DeleteTaskForm';
 import EditTaskForm from '../components/EditTaskForm';
 import FilterTaskBar from '../components/FilterTaskBar';
@@ -24,13 +23,11 @@ function Tasks() {
     const dispatch = useDispatch();
     const { tasks: reduxTasks, loading, errorMessage } = useSelector((state) => state.task);
     const { users: reduxUsers, token } = useSelector((state) => state.user);
-    // const { users: reduxUsers } = useSelector((state) => state.user);
-    // const { token } = useSelector((state) => state.user);
-
     // Array to store and filter tasks data
     const [tasksList, setTasksList] = useState([]);
     const [tasksFilterList, setTasksFilterList] = useState([]);
-
+    // State for current task
+    const [currentTask, setCurrentTask] = useState();
     // States for modals and selected task
     const [deleteModal, setDeleteModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
@@ -39,6 +36,8 @@ function Tasks() {
     // States for notifications
     const [notificationModal, setNotificationModal] = useState(false);
     const [notificationType, setNotificationType] = useState('');
+    // States for task timer
+    const [timerModal, setTimerModal] = useState(false);
 
     // Fetch tasks when the component mounts
     useEffect(() => {
@@ -50,10 +49,23 @@ function Tasks() {
         setTasksFilterList(reduxTasks || []);
     }, [reduxTasks]);
 
-    // Get Updated name from reduxUsers
-    const getClientName = (clientId) => {
+    // Get Updated name or company from reduxUsers
+    const getClient = (clientId, key) => {
         const client = reduxUsers.find((user) => user._id === clientId);
-        return client ? client.name : 'Unknown Client';
+        return key === 'name' && client
+            ? client.name
+            :key === 'company' && client
+            ? client.company
+            :key === 'client' && client
+            ? `${client.name} - ${client.company}`
+            : 'Unknown Client'
+    };
+
+    // Calculate Task Duration with hook dateManager
+    const calculateTaskDuration = (taskStart, taskEnd) => {
+        if (!taskStart || !taskEnd) return 'Task started';
+        // Call function in custom hook dateManager
+        return calcTime(taskStart, taskEnd);
     };
 
     // DELETE. Selected task and show delete modal
@@ -78,6 +90,14 @@ function Tasks() {
     // Close Notification
     const closeNotification = () => {
         setNotificationModal(false);
+    }
+     // TIMER. Show timer modal
+    const timer = () => {
+        setTimerModal(true);
+    };
+    // Close Timer
+    const closeTimer = () => {
+        setTimerModal(false);
     }
     // Close  all modals
     const closeModals = () => {
@@ -112,8 +132,8 @@ function Tasks() {
                 {tasksFilterList.map((task) => (
                     <li key={task._id} className='item'>
                         <div className='text-container'>
-                            <p className='paragraph bold'>{getClientName(task.client._id)}</p>
-                            <p className='paragraph description'>{task.dateStart}</p>
+                            <p className='paragraph bold'>{getClient(task.client._id, 'client')}</p>
+                            <p className='paragraph description'>Duration: {calculateTaskDuration(task.dateStart, task.dateEnd)}</p>
                             <p className='paragraph description'>{task.description}</p>
                         </div>
                         <div className='buttons-container'>
@@ -134,13 +154,27 @@ function Tasks() {
                     onCloseNotification={closeNotification}
                 />
             )}
+            {timerModal && (
+                <TimerNotification
+                    task={currentTask}
+                    onSave={(timerTask) => {
+                        closeTimer();
+                        setTasksList((prevTasks) =>
+                            prevTasks.map(task => task._id === timerTask._id ? timerTask : task)
+                        );
+                        notification('task-edit');
+                    }}
+                />
+            )}
             {createModal && (
                 <CreateTaskForm
                     onCloseModals={closeModals}
                     onSave={(createdTask) => {
+                        setCurrentTask(createdTask)
                         setTasksList((prevTasks) => [...prevTasks, createdTask]);
                         closeModals();
                         notification('task-create');
+                        timer()
                     }}
                 />
             )}
@@ -160,6 +194,7 @@ function Tasks() {
                     task={selectedTask}
                     onCloseModals={closeModals}
                     onSave={(updatedTask) => {
+                        setCurrentTask(updatedTask)
                         setTasksList(prevTasks => prevTasks.map(task => task._id === updatedTask._id ? updatedTask : task));
                         closeModals();
                         notification('task-edit');

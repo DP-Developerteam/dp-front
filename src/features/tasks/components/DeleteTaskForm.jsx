@@ -11,19 +11,23 @@ const DeleteTaskForm = ({task, onCloseModals, onSave}) => {
     const { users: reduxUsers, token } = useSelector((state) => state.user);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    // const { token } = useSelector((state) => state.user);
     const taskId = task._id;
 
-    // Get Updated name from reduxUsers
-    const getClientName = (clientId) => {
+    // Get Updated name and company from reduxUsers
+    const getClient = (clientId, key) => {
         const client = reduxUsers.find((user) => user._id === clientId);
-        return client ? client.name : 'Unknown Client';
+        return key === 'name' && client
+            ? client.name
+            :key === 'company' && client
+            ? client.company
+            :key === 'client' && client
+            ? `${client.name} - ${client.company}`
+            : 'Unknown Client'
     };
-
+    // Handle submit
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
-
         try {
             // Directly calling deleteTask
             const response = await deleteTask(taskId, token);
@@ -62,12 +66,11 @@ const DeleteTaskForm = ({task, onCloseModals, onSave}) => {
                             <input type="text" value={task._id} readOnly={true} />
                         </div>
                         <div className='form-field'>
-                            <label>Task client name:</label>
-                            <input type="text" value={getClientName(task.client._id)} readOnly={true} />
-                            {/* <input type="text" value={task.client.name} readOnly={true} /> */}
+                            <label>Task client & company:</label>
+                            <input type="text" value={getClient(task.client._id, 'client')} readOnly={true} />
                         </div>
                         <div className='form-field'>
-                            <label>Task date:</label>
+                            <label>Task started:</label>
                             <input type="text" value={task.dateStart} readOnly={true} />
                         </div>
                         <div className='form-field'>

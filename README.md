@@ -44,6 +44,8 @@ Ensure you have the following installed on your system:
 ┃ ┃ ┃ ┣ 📂 components           // Reusable task components
 ┃ ┃ ┃ ┃ ┣ 📄 CreateTaskForm.jsx // Task creation form
 ┃ ┃ ┃ ┃ ┗ 📄 DateManager.jsx    // Date manager
+┃ ┃ ┃ ┣ 📂 hooks                // Task-related custom hooks
+┃ ┃ ┃ ┃ ┗ 📄 dateManager.jsx    // hook to manage dates
 ┃ ┃ ┃ ┣ 📂 pages                // Task-related pages
 ┃ ┃ ┃ ┃ ┗ 📄 Tasks.jsx          // Task listing page
 ┃ ┃ ┃ ┗ 📄 taskService.js       // API logic for tasks
