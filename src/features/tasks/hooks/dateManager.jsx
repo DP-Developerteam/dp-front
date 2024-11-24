@@ -68,9 +68,6 @@ export const calcMultiTime = (tasksFilterList) => {
         const start = new Date(task.dateStart);
         const end = new Date(task.dateEnd);
         const duration = (end - start) / (1000 * 60); // Convert milliseconds to minutes
-        // const suma = sum + duration;
-        // return suma;
-        // console.log("suma DATEMANAGER: ", suma)
         return sum + duration;
     }, 0);
     // Convert total minutes to hours and minutes
@@ -120,7 +117,6 @@ export const TimerNotification = ({ task, onSave }) => {
         // Dispatch the editTaskThunk
         try {
             const response = await dispatch(editTaskThunk(timerTask)).unwrap();
-            console.log("response", response)
             onSave(response.result);
         } catch (error) {
             console.log("ERROR");

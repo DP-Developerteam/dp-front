@@ -42,7 +42,6 @@ export const createTask = async (taskData, userToken) => {
 };
 
 export const editTask = async (taskData, userToken) => {
-    console.log("### -> EDIT-TASK api call");
     // Extract taskId from the taskData object
     const taskId = taskData._id;
     try {

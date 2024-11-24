@@ -40,7 +40,6 @@ const SignInForm = ({ onSignInSuccess }) => {
             const userToken = action.token;
             const userRole = action.role;
             const expiresIn = action.expiresIn;
-            console.log("expiresIn signinform: ", expiresIn)
             // const alertExpires = expiresIn - 20; // alert pop ups when there are 20 seconds for the auto signOut
 
             if (userToken) {

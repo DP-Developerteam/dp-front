@@ -105,7 +105,6 @@ const EditTaskForm = ({task, onCloseModals, onSave}) => {
         // Avoid dispatch if no changes are made
         if (Object.keys(updatedFields).length === 0) {
             setErrorMessage('No changes detected');
-            console.log(errorMessage);
             return;
         }
         // Include the task ID

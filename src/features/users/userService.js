@@ -48,7 +48,6 @@ export const signinUser = async (credentials) => {
 
 // ALL USERS - Function to get all users
 export const getUsers = async (userToken) => {
-    console.log("### -> GET-USERS api call");
     try {
         // Make an API call to fetch all users
         const response = await api.get(`${API_URL}/`, {
