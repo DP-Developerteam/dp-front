@@ -70,7 +70,10 @@ function Header() {
                 <NavLink className='tab' onClick={closeMenu} to='about'>{t('nav.about')}</NavLink>
 
                 {isLoggedIn && (
-                    <p className='tab' onClick={signOut}>{t('nav.signOut')}</p>
+                    <>
+                        <p className='tab' onClick={signOut}>{t('nav.signOut')}</p>
+                        <NavLink className='tab' onClick={closeMenu} to='crm'>{t('nav.crm')}</NavLink>
+                    </>
                 )}
 
                 <div className='languagesBox'>
