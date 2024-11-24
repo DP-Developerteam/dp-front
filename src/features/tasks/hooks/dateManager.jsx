@@ -52,6 +52,38 @@ export const calcTime = (dateStart, dateEnd) => {
     return `${hours} h - ${minutes} m`;
 }
 
+// Function to calculate time of multiple tasks
+export const calcMultiTime = (tasksFilterList) => {
+    // Filter valid tasks
+    const validTasks = tasksFilterList.filter((task) => {
+        const start = new Date(task.dateStart);
+        const end = new Date(task.dateEnd);
+        // Check if both dates are valid
+        const isValid = !isNaN(start.getTime()) && !isNaN(end.getTime());
+        // Keep only valid tasks
+        return isValid;
+    });
+    // Calculate the total duration in minutes
+    const totalMinutes = validTasks.reduce((sum, task) => {
+        const start = new Date(task.dateStart);
+        const end = new Date(task.dateEnd);
+        const duration = (end - start) / (1000 * 60); // Convert milliseconds to minutes
+        // const suma = sum + duration;
+        // return suma;
+        // console.log("suma DATEMANAGER: ", suma)
+        return sum + duration;
+    }, 0);
+    // Convert total minutes to hours and minutes
+    const convertedHours = Math.floor(totalMinutes / 60);
+    const convertedMinutes = Math.round(totalMinutes % 60);
+    // Format with leading zeros
+    const hours = convertedHours.toString().padStart(2, '0');
+    const minutes = convertedMinutes.toString().padStart(2, '0');
+
+    return `Total: ${hours} hours ${minutes} minutes`;
+}
+
+// Function to activate and manage TimerNotification
 export const TimerNotification = ({ task, onSave }) => {
     // REDUX
     const dispatch = useDispatch();

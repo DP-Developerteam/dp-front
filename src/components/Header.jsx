@@ -16,8 +16,6 @@ import FlagGermany from '../assets/img/flag-germany.svg';
 
 
 
-
-
 function Header() {
     //Translations variables and hooks
     const { t, i18n } = useTranslation();
@@ -50,7 +48,6 @@ function Header() {
         closeMenu();
         // Redirect to SignIn
         navigate('/crm');
-        // window.location.reload();
     };
     // REDUX Variable to know if user is logged in or not. Used to render of the buttons.
     const { isLoggedIn } = useSelector((state) => state.user);

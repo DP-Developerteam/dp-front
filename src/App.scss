@@ -7,8 +7,13 @@
 @import './styles/layouts.scss';
 @import './styles/pages.scss';
 
-body{
+html {
     scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+body{
     background: $color-light;
     @include font(1rem, 400, $color-dark);
     word-break: break-word;

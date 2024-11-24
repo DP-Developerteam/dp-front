@@ -15,11 +15,16 @@ import Notifications from '../../../components/Notifications';
 import iconDelete from '../../../assets/img/icon-delete.svg';
 import iconEdit from '../../../assets/img/icon-edit.svg';
 import iconAdd from '../../../assets/img/icon-add.svg';
+import iconArrowUp from '../../../assets/img/icon-arrow-up.svg';
+import iconArrowDown from '../../../assets/img/icon-arrow-down.svg';
 
 const Users = () => {
     // REDUX
     const dispatch = useDispatch();
     const { users: reduxUsers, token, errorMessage } = useSelector((state) => state.user);
+    // State to show/hidde users
+    // const [showUsers, setShowUsers] = useState(false);
+    const [showUsers, setShowUsers] = useState(window.innerWidth > 765);
     // Array to store and filter user data
     const [usersList, setUsersList] = useState([]);
     const [usersFilterList, setUsersFilterList] = useState([]);
@@ -31,6 +36,19 @@ const Users = () => {
     // States for notifications
     const [notificationModal, setNotificationModal] = useState(false);
     const [notificationType, setNotificationType] = useState('');
+
+    // Show hide tasks
+    const toggleUsers = () => {
+        setShowUsers(!showUsers)
+    }
+    useEffect(() => {
+        const handleResize = () => {
+            setShowUsers(window.innerWidth > 765);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Fetch users when the component mounts
     useEffect(() => {
@@ -81,41 +99,54 @@ const Users = () => {
     // Render the list of users or a message if no users are found
     return (
         <div className='users-page crud-page'>
-            <div className='title-container'>
-                <h1 className='title'>Users</h1>
+            <header className='header-container'>
+                <div className='title-container'>
+                    <h1 className='title'>Users</h1>
+                    {showUsers === false ?
+                        ( <img className='icon' onClick={(toggleUsers)} src={iconArrowDown} alt='delete icon' width='20px' height='20px'/> )
+                        : ( <img className='icon' onClick={(toggleUsers)} src={iconArrowUp} alt='delete icon' width='20px' height='20px'/> )
+                    }
+                </div>
                 <button className="button" onClick={() => createUser()}>
                     Create user <img className='icon' src={iconAdd} alt='delete icon' width='20px' height='20px'/>
                 </button>
-            </div>
-            <div className='filter-bar-container'>
-                <FilterUserBar setUsersFilterList={setUsersFilterList} usersList={usersList} />
-            </div>
+            </header>
             {!reduxUsers || !reduxUsers ? (
                 <div>Loading data...</div>
             ) : (
                 <>
-                    {/* No Tasks Found */}
                     {usersFilterList.length === 0 ? (
-                        <p>No tasks found.</p>
+                        <p>No users found.</p>
                     ) : (
-                        <ul className='items-container'>
-                            {usersFilterList.map((user) => (
-                                <li key={`user-${user._id}`} className='item'>
-                                    <div className='text-container'>
-                                        <p className='paragraph bold'>{user.name}</p>
-                                        <p className='paragraph'>{user.company}</p>
+                        <>
+                            {showUsers === false ? (
+                                <></>
+                            ) : (
+                                <>
+                                    <div className='filter-bar-container'>
+                                        <FilterUserBar setUsersFilterList={setUsersFilterList} usersList={usersList} />
                                     </div>
-                                    <div className='buttons-container'>
-                                        <button className='icon' onClick={() => selectUserDelete(user)}>
-                                            <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px'/>
-                                        </button>
-                                        <button className='icon' onClick={() => selectUserEdit(user)}>
-                                            <img className='icon' src={iconEdit} alt='edit icon' width='20px' height='20px'/>
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                                    <ul className='items-container'>
+                                        {usersFilterList.map((user) => (
+                                            <li key={`user-${user._id}`} className='item'>
+                                                <div className='text-container'>
+                                                    <p className='paragraph bold'>{user.name}</p>
+                                                    <p className='paragraph'>{user.company}</p>
+                                                </div>
+                                                <div className='buttons-container'>
+                                                    <button className='icon' onClick={() => selectUserDelete(user)}>
+                                                        <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px'/>
+                                                    </button>
+                                                    <button className='icon' onClick={() => selectUserEdit(user)}>
+                                                        <img className='icon' src={iconEdit} alt='edit icon' width='20px' height='20px'/>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
+                        </>
                     )}
                 </>
             )}

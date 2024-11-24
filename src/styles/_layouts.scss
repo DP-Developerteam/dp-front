@@ -8,7 +8,6 @@
 .page {
     .hero {
         min-height: calc(100dvh - 250px);
-        // calc(100vh - 50px); 50px for the navbar on phone
     }
 }
 // LAYOUT HERO - BIG TITLE
@@ -229,9 +228,10 @@
 
 // LAYOUT CRM - rendering boxes from different collections.
 .layout-crm {
-    @include displayFlex(column wrap, center, flex-start);
+    @include displayFlex(column wrap, flex-start, flex-start);
     gap: 32px;
     width: 100%;
+    min-height: calc(100dvh - 71px);
     // LAYOUT CRUD
     .crud-page {
         @include displayFlex(column wrap, flex-start, flex-start);
@@ -239,9 +239,13 @@
         padding: 10px;
         width: 100%;
         max-width: 900px;
-        .title-container {
+        .header-container {
             @include displayFlex(row nowrap, space-between, center);
             width: 100%;
+            .title-container {
+                @include displayFlex(row nowrap, space-between, center);
+                gap: 16px;
+            }
             .button {
                 @include displayFlex(row nowrap, center, center);
                 @include hoverPointer();
@@ -249,7 +253,7 @@
             }
         }
         .items-container {
-            @include displayFlex(column wrap, flex-start, flex-start);
+            @include displayFlex(column nowrap, flex-start, flex-start);
             gap: 10px;
             width: 100%;
             max-width: 600px;
@@ -285,6 +289,23 @@
         .crud-page {
             .items-container {
                 max-width: 100%;
+                height: calc(100dvh - 220px);
+                overflow: scroll;
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+                padding-bottom: 100px;
+                .item {
+                    @include fade-in-out();
+                }
+            }
+        }
+    }
+    @media (min-width: 766px) and (max-width: 900px) {
+        .crud-page {
+            .items-container {
+                .item {
+                    @include fade-in-out();
+                }
             }
         }
     }

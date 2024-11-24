@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTasksThunk } from '../taskSlice';
 // Import custom hooks
-import { formatYearMonth, calcTime, TimerNotification } from '../hooks/dateManager';
+import { formatYearMonth, calcTime, calcMultiTime, TimerNotification } from '../hooks/dateManager';
 // Import components
 import CreateTaskForm from '../components/CreateTaskForm';
 import DeleteTaskForm from '../components/DeleteTaskForm';
@@ -17,12 +17,16 @@ import Notifications from '../../../components/Notifications';
 import iconDelete from '../../../assets/img/icon-delete.svg';
 import iconEdit from '../../../assets/img/icon-edit.svg';
 import iconAdd from '../../../assets/img/icon-add.svg';
+import iconArrowUp from '../../../assets/img/icon-arrow-up.svg';
+import iconArrowDown from '../../../assets/img/icon-arrow-down.svg';
 
 function Tasks() {
     // REDUX
     const dispatch = useDispatch();
     const { tasks: reduxTasks, errorMessage } = useSelector((state) => state.task);
     const { users: reduxUsers, token } = useSelector((state) => state.user);
+    // State to show/hidde tasks
+    const [showTasks, setShowTasks] = useState(true);
     // Array to store and filter tasks data
     const [tasksList, setTasksList] = useState([]);
     const [tasksFilterList, setTasksFilterList] = useState([]);
@@ -38,6 +42,11 @@ function Tasks() {
     const [notificationType, setNotificationType] = useState('');
     // States for task timer
     const [timerModal, setTimerModal] = useState(false);
+
+    // Show hide tasks
+    const toggleTasks = () => {
+        setShowTasks(!showTasks)
+    }
 
     // Fetch tasks when the component mounts
     useEffect(() => {
@@ -62,13 +71,24 @@ function Tasks() {
     };
 
     // Calculate Task Duration with hook dateManager
-    const calculateTaskDuration = (taskStart, taskEnd) => {
+    const callCalculateTaskDuration = (taskStart, taskEnd) => {
         if (!taskStart || !taskEnd) return 'Task started';
         // Call function in custom hook dateManager
         return calcTime(taskStart, taskEnd);
     };
 
     // Calculate Task Duration with hook dateManager
+    const callCalculateFormatTotalTime = (tasksFilterList) => {
+        if (!tasksFilterList) return 'No tasks';
+        // Call function in custom hook dateManager
+        return calcMultiTime(tasksFilterList);
+    };
+    // Update total time when Filtered Tasks change
+    useEffect(() => {
+        calcMultiTime(tasksFilterList);
+    }, [tasksFilterList]);
+
+    // Formatted year and month with hook dateManager
     const callFormatYearMonth = (taskStart) => {
         // Call function in custom hook dateManager
         return formatYearMonth(taskStart);
@@ -119,42 +139,56 @@ function Tasks() {
 
     return (
         <div className='tasks-page crud-page'>
-            <div className='title-container'>
-                <h1 className='title'>Tasks</h1>
+            <header className='header-container'>
+                <div className='title-container'>
+                    <h1 className='title'>Tasks</h1>
+                    {showTasks === false ?
+                        ( <img className='icon' onClick={(toggleTasks)} src={iconArrowDown} alt='delete icon' width='20px' height='20px'/> )
+                        : ( <img className='icon' onClick={(toggleTasks)} src={iconArrowUp} alt='delete icon' width='20px' height='20px'/> )
+                    }
+                </div>
                 <button className="button" onClick={() => createTask()}>
                     Create task <img className='icon' src={iconAdd} alt='delete icon' width='20px' height='20px'/>
                 </button>
-            </div>
-            <div className='filter-bar-container'>
-                <FilterTaskBar setTasksFilterList={setTasksFilterList} tasksList={tasksList} />
-            </div>
+            </header>
             {!reduxUsers || !reduxTasks ? (
                 <div>Loading data...</div>
             ) : (
                 <>
-                    {/* No Tasks Found */}
                     {tasksFilterList.length === 0 ? (
                         <p>No tasks found.</p>
                     ) : (
-                        <ul className='items-container'>
-                            {tasksFilterList.map((task) => (
-                                <li key={`task-${task._id}`} className='item'>
-                                    <div className='text-container'>
-                                        <p className='paragraph bold'>{getClient(task.client._id, 'client')}</p>
-                                        <p className='paragraph description'>{callFormatYearMonth(task.dateStart)} - Duration: {calculateTaskDuration(task.dateStart, task.dateEnd)}</p>
-                                        <p className='paragraph description'>{task.description}</p>
+                        <>
+                            {showTasks === false ? (
+                                <></>
+                            ) : (
+                                <>
+                                    <div className='filter-bar-container'>
+                                        <FilterTaskBar setTasksFilterList={setTasksFilterList} tasksList={tasksList} />
                                     </div>
-                                    <div className='buttons-container'>
-                                        <button className='icon' onClick={() => selectTaskDelete(task)}>
-                                            <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px' />
-                                        </button>
-                                        <button className='icon' onClick={() => selectTaskEdit(task)}>
-                                            <img className='icon' src={iconEdit} alt='edit icon' width='20px' height='20px' />
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                                    <p className='paragraph'>{callCalculateFormatTotalTime(tasksFilterList)}</p>
+                                    <ul className='items-container'>
+                                        {tasksFilterList.map((task) => (
+                                            <li key={`task-${task._id}`} className='item'>
+                                                <div className='text-container'>
+                                                    <p className='paragraph bold'>{getClient(task.client._id, 'client')}</p>
+                                                    <p className='paragraph description'>{callFormatYearMonth(task.dateStart)} - Duration: {callCalculateTaskDuration(task.dateStart, task.dateEnd)}</p>
+                                                    <p className='paragraph description'>{task.description}</p>
+                                                </div>
+                                                <div className='buttons-container'>
+                                                    <button className='icon' onClick={() => selectTaskDelete(task)}>
+                                                        <img className='icon' src={iconDelete} alt='delete icon' width='20px' height='20px' />
+                                                    </button>
+                                                    <button className='icon' onClick={() => selectTaskEdit(task)}>
+                                                        <img className='icon' src={iconEdit} alt='edit icon' width='20px' height='20px' />
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
+                        </>
                     )}
                 </>
             )}
