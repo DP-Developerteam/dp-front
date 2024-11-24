@@ -1,6 +1,8 @@
 //Import styles and libraries
 import '../App.scss';
 import React from 'react';
+// Import framer motion
+import { motion } from 'framer-motion';
 //Import images
 import logoAfterEffects from '../assets/img/logo-aftereffects.svg';
 import logoAngular from '../assets/img/logo-angular.webp';
@@ -41,7 +43,13 @@ function Homepage() {
                 <h6 className='title-tag'>A bit of <span className='color'>this</span><br/>a bit of <span className='color'>that</span></h6>
             </section>
 
-            <section className='layout-big-card column-start'>
+            <motion.section
+                className="layout-big-card column-start"
+                initial={{ opacity: 0.1, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: false, amount: 0.5 }} // Trigger when 80% of the section is in view
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
                 <div className='items-container row-start'>
                     <div className='item column-start'>
                         <h2 className='subtitle'>Do you seek...</h2>
@@ -54,7 +62,21 @@ function Homepage() {
                         <img className='img' src={imgWebsite} alt='' width='340px' height='200px'/>
                     </div>
                 </div>
-            </section>
+            </motion.section>
+            {/* <section className='layout-big-card column-start'>
+                <div className='items-container row-start'>
+                    <div className='item column-start'>
+                        <h2 className='subtitle'>Do you seek...</h2>
+                        <p className='paragraph'>A refined, Swiss-inspired design aesthetic?</p>
+                        <p className='paragraph'>Captivating, seamless animations?</p>
+                        <p className='paragraph'>A website that grows with your brand?</p>
+                        <p className='paragraph bold'>Explore what’s possible</p>
+                    </div>
+                    <div className='item column-start'>
+                        <img className='img' src={imgWebsite} alt='' width='340px' height='200px'/>
+                    </div>
+                </div>
+            </section> */}
 
             <section className='layout-bento column-start'>
                 <div className='text-boxes-container column-start'>
