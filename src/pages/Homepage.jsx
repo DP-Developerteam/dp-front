@@ -47,8 +47,12 @@ function Homepage() {
                 className="layout-big-card column-start"
                 initial={{ opacity: 0.1, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: false, amount: 0.5 }} // Trigger when 80% of the section is in view
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                viewport={{
+                    once: false,
+                    amount: 0.1,
+                    margin: "-10% 0% -20% 0%"
+                }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
             >
                 <div className='items-container row-start'>
                     <div className='item column-start'>
@@ -63,22 +67,14 @@ function Homepage() {
                     </div>
                 </div>
             </motion.section>
-            {/* <section className='layout-big-card column-start'>
-                <div className='items-container row-start'>
-                    <div className='item column-start'>
-                        <h2 className='subtitle'>Do you seek...</h2>
-                        <p className='paragraph'>A refined, Swiss-inspired design aesthetic?</p>
-                        <p className='paragraph'>Captivating, seamless animations?</p>
-                        <p className='paragraph'>A website that grows with your brand?</p>
-                        <p className='paragraph bold'>Explore what’s possible</p>
-                    </div>
-                    <div className='item column-start'>
-                        <img className='img' src={imgWebsite} alt='' width='340px' height='200px'/>
-                    </div>
-                </div>
-            </section> */}
 
-            <section className='layout-bento column-start'>
+            <motion.section
+                className="layout-bento column-start"
+                initial={{ opacity: 0.1, scale: 1 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: false, amount: 0.5 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
                 <div className='text-boxes-container column-start'>
                     <div className='text-container column-start'>
                         <h3 className='subtitle'>Services</h3>
@@ -109,7 +105,40 @@ function Homepage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </motion.section>
+
+            {/* <section className='layout-bento column-start'>
+                <div className='text-boxes-container column-start'>
+                    <div className='text-container column-start'>
+                        <h3 className='subtitle'>Services</h3>
+                        <p className='paragraph'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris facilisis aliquet urna, quis dignissim ex dignissim in. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </div>
+                    <div className='boxes-container row-start'>
+                        <div className='box column-end'>
+                            <div className='icon top-left' />
+                            <div className='icon top-right' />
+                            <p className='paragraph'>Web development</p>
+                        </div>
+                        <div className='box column-end'>
+                            <div className='icon top-left' />
+                            <div className='icon top-right' />
+                            <p className='paragraph'>Graphic design</p>
+                        </div>
+                    </div>
+                </div>
+                <div className='text-boxes-container column-start'>
+                    <div className='text-container column-start'>
+                        <h3 className='subtitle'>Workflow</h3>
+                        <p className='paragraph'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris facilisis aliquet urna, quis dignissim ex dignissim in. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </div>
+                    <div className='boxes-container row-start'>
+                        <div className='box box-large column-end'>
+                            <span className='navDots'/>
+                            <p className='paragraph'>Lorem ipsum</p>
+                        </div>
+                    </div>
+                </div>
+            </section> */}
 
             <section className='horizontal-scroller column-center'>
                 <div className='items'>

@@ -95,7 +95,6 @@
         border-radius: 20px;
         background-color: $color-background;
         filter: drop-shadow(0px -1px 16px #00000020);
-        // @include fade-in(entry 150px);
         .items-container {
             justify-content: space-between;
             height: 100%;
@@ -129,7 +128,6 @@
         padding: 0 10px;
         .text-boxes-container {
             gap: 20px;
-            // @include fade-in(entry 150px);
             .text-container {
                 gap: 10px;
                 width:100%;
@@ -176,7 +174,6 @@
             max-width: 900px;
             .text-boxes-container {
                 gap: 20px;
-                // @include fade-in(50px 600px);
                 .boxes-container {
                     gap: 20px;
                     .box {
@@ -209,7 +206,6 @@
             .text-boxes-container {
                 flex-flow: row nowrap;
                 .text-container {
-                    // width:100%;
                     max-width: 400px;
                 }
                 .boxes-container {
@@ -294,19 +290,7 @@
                 -ms-overflow-style: none;
                 scrollbar-width: none;
                 padding-bottom: 100px;
-                // .item {
-                //     @include fade-in-out();
-                // }
             }
         }
     }
-    // @media (min-width: 766px) and (max-width: 900px) {
-    //     .crud-page {
-    //         .items-container {
-    //             .item {
-    //                 @include fade-in-out();
-    //             }
-    //         }
-    //     }
-    // }
 }
